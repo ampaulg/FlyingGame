@@ -1,15 +1,26 @@
 function checkArgCount( argCount, expected, name ) {
     if ( argCount != expected ) {
-        throw "Invalid argument count for " + name + "\n"
-            + arguments.length + " given, 4 expected";
+        throw new Error( "Invalid argument count for " + name + "\n"
+           + arguments.length + " given, " + expected + " expected" );
     }
 }
 
 function checkArgsAreNumbers( args, name ) {
     for ( var i = 0; i < args.length; i++ ) {
-        if ( isNaN( args[ i ] ) ) {
-            throw "Invalid argument type for " + name + "\n"
-                + "arg " + i + " ( " + args[ i ] + " )" + " is not a number";
+        if ( ( typeof args[ i ] ) != "number" ) {
+            throw new Error("Invalid argument type for " + name + "\n"
+                + "arg " + ( i + 1 ) + " ( " + args[ i ] + " ) is not a number" );
+        }
+    }
+}
+
+function checkArgsAreInts( args, name ) {
+    for ( var i = 0; i < args.length; i++ ) {
+        if ( !( Number.isInteger( args[ i ] ) )
+        || ( args[ i ] < 0 ) ) {
+            throw new Error("Invalid argument type for " + name + "\n"
+                + "arg " + ( i + 1 ) + " ( " + args[ i ] + " ) is not a "
+                + "non-negative integer" );
         }
     }
 }
@@ -33,8 +44,17 @@ function Vertex( x, y, z ) {
 
 function Face( v1, v2, v3 ) {
     checkArgCount( arguments.length, 3, "Face" );
-    checkArgsAreNumbers( arguments, "Face" );
+    checkArgsAreInts( arguments, "Face" );
     this.v1 = v1;
     this.v2 = v2;
     this.v3 = v3;
 }
+
+module.exports = {
+    checkArgCount,
+    checkArgsAreNumbers,
+    checkArgsAreInts,
+    Color,
+    Vertex,
+    Face
+};
