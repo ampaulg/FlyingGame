@@ -1,7 +1,7 @@
 function checkArgCount( argCount, expected, name ) {
     if ( argCount != expected ) {
         throw new Error( "Invalid argument count for " + name + "\n"
-           + arguments.length + " given, " + expected + " expected" );
+           + argCount + " given, " + expected + " expected" );
     }
 }
 
@@ -27,6 +27,9 @@ function checkArgsAreInts( args, name ) {
 
 function Color( r, g, b, a ) {
     checkArgCount( arguments.length, 4, "Color" );
+    if ( !( this instanceof Color ) ){
+        return new Color( r, g, b, a );
+    }
     checkArgsAreNumbers( arguments, "Color" );
     this.r = r;
     this.g = g;
@@ -36,6 +39,9 @@ function Color( r, g, b, a ) {
 
 function Vertex( x, y, z ) {
     checkArgCount( arguments.length, 3, "Vertex" );
+    if ( !( this instanceof Vertex ) ){
+        return new Vertex( x, y, z );
+    }
     checkArgsAreNumbers( arguments, "Vertex" );
     this.x = x;
     this.y = y;
@@ -44,6 +50,9 @@ function Vertex( x, y, z ) {
 
 function Face( v1, v2, v3 ) {
     checkArgCount( arguments.length, 3, "Face" );
+    if ( !( this instanceof Face ) ){
+        return new Face( v1, v2, v3 );
+    }
     checkArgsAreInts( arguments, "Face" );
     this.v1 = v1;
     this.v2 = v2;

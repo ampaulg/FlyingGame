@@ -60,12 +60,10 @@ window.onload = function init() {
     gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vColor);
 
-    console.log("asdf");
     render();
 };
 
 function render() {
     gl.clear( gl.COLOR_BUFFER_BIT );
     gl.drawElements( gl.TRIANGLES, 3, gl.UNSIGNED_SHORT, 0 );
-    //window.requestAnimFrame(render);
 }

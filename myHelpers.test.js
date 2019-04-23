@@ -74,7 +74,7 @@ test( "checkArgsAreInts throws correct error message", () => {
 });
 
 test( "Color constructor works with correct args", () => {
-    var color = new Color( 0.1, 0.2, 0.3, 0.4 );
+    var color = Color( 0.1, 0.2, 0.3, 0.4 );
     expect( color.r ).toBe( 0.1 );
     expect( color.g ).toBe( 0.2 );
     expect( color.b ).toBe( 0.3 );
@@ -94,7 +94,7 @@ test( "Color constructor fails with wrong arg types", () => {
 });
 
 test( "Vertex constructor works with correct args", () => {
-    var vertex = new Vertex( 0.1, 0.2, 0.3 );
+    var vertex = Vertex( 0.1, 0.2, 0.3 );
     expect( vertex.x ).toBe( 0.1 );
     expect( vertex.y ).toBe( 0.2 );
     expect( vertex.z ).toBe( 0.3 );
@@ -113,10 +113,10 @@ test( "Vertex constructor fails with wrong arg types", () => {
 });
 
 test( "Face constructor works with correct args", () => {
-    var face = new Vertex( 0.1, 0.2, 0.3 );
-    expect( face.x ).toBe( 0.1 );
-    expect( face.y ).toBe( 0.2 );
-    expect( face.z ).toBe( 0.3 );
+    var face = Face( 3, 4, 5 );
+    expect( face.v1 ).toBe( 3 );
+    expect( face.v2 ).toBe( 4 );
+    expect( face.v3 ).toBe( 5 );
 });
 
 test( "Face constructor fails with wrong arg count", () => {
