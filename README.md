@@ -1,4 +1,4 @@
-# WebGl Flying Game
+# WebGL Flying Game
 
 Still just getting started with this.
 

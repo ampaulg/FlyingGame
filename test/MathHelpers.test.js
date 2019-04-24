@@ -6,7 +6,7 @@ const {
     Vertex,
     Face,
     flatten
-} = require( "../myHelpers" );
+} = require( "../MathHelpers" );
 
 test( "argCount has no error when count is correct", () => {
   expect(
