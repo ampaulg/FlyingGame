@@ -59,11 +59,54 @@ function Face( v1, v2, v3 ) {
     this.v3 = v3;
 }
 
+function flatten( arr ) {
+    if ( !Array.isArray( arr ) ) {
+        throw new Error( "flatten argument is not an array" );
+    } else if ( arr.length == 0 ) {
+        throw new Error( "flatten argument is an empty array" );
+    }
+
+    var output = [];
+
+    switch ( arr[0].constructor.name ) {
+        case "Color":
+            for ( var i = 0; i < arr.length; i++ ) {
+                output.push( arr[ i ].r );
+                output.push( arr[ i ].g );
+                output.push( arr[ i ].b );
+                output.push( arr[ i ].a );
+            }
+            output = new Float32Array( output );
+            break;
+        case "Vertex":
+            for ( var i = 0; i < arr.length; i++ ) {
+                output.push( arr[ i ].x );
+                output.push( arr[ i ].y );
+                output.push( arr[ i ].z );
+            }
+            output = new Float32Array( output );
+            break;
+        case "Face":
+            for ( var i = 0; i < arr.length; i++ ) {
+                output.push( arr[ i ].v1 );
+                output.push( arr[ i ].v2 );
+                output.push( arr[ i ].v3 );
+            }
+            output = new Uint16Array( output );
+            break;
+        default:
+            throw new Error( "flatten argument is of unsupported type" );
+    }
+
+    return output;
+}
+
 module.exports = {
     checkArgCount,
     checkArgsAreNumbers,
     checkArgsAreInts,
     Color,
     Vertex,
-    Face
+    Face,
+    flatten
 };

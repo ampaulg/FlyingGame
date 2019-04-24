@@ -4,7 +4,8 @@ const {
     checkArgsAreInts,
     Color,
     Vertex,
-    Face
+    Face,
+    flatten
 } = require( "./myHelpers" );
 
 test( "argCount has no error when count is correct", () => {
@@ -129,4 +130,52 @@ test( "Face constructor fails with wrong arg types", () => {
     expect(
         () => { Face( 1, 2, 3.5 ) }
     ).toThrow();
+});
+
+test( "Flatten color works correctly on valid input", () => {
+    var input = [
+        Color( 1, 2.3, 3, 4 ),
+        Color( 5, 6, 7.2, 8 )
+    ];
+    var output = new Float32Array( [ 1, 2.3, 3, 4, 5, 6, 7.2, 8 ] );
+    expect( flatten( input ) ).toEqual( output );
+});
+
+test( "Flatten vertex works correctly on valid input", () => {
+    var input = [
+        Vertex( 1, 2.3, 3 ),
+        Vertex( 5, 6, 7.2 )
+    ];
+    var output = new Float32Array( [ 1, 2.3, 3, 5, 6, 7.2 ] );
+    expect( flatten( input ) ).toEqual( output );
+});
+
+test( "Flatten face works correctly on valid input", () => {
+    var input = [
+        Face( 1, 3, 5 ),
+        Face( 7, 6, 2 )
+    ];
+    var output = new Uint16Array( [ 1, 3, 5, 7, 6, 2 ] );
+    expect( flatten( input ) ).toEqual( output );
+});
+
+test( "Flatten rejects non-array", () => {
+    var error = "flatten argument is not an array";
+    expect(
+        () => { flatten( "notAnArray" ) }
+    ).toThrowError( error );
+});
+
+test( "Flatten rejects empty array", () => {
+    var error = "flatten argument is an empty array";
+    expect(
+        () => { flatten( [] ) }
+    ).toThrowError( error );
+});
+
+test( "Flatten rejects arrays of other types", () => {
+    var error = "flatten argument is of unsupported type";
+    expect(
+        () => { flatten( [ 1, 2, 3 ] ) }
+    ).toThrowError( error );
 });

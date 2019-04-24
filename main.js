@@ -2,23 +2,22 @@ var canvas;
 var gl;
 var program;
 
-const RED = [ 1.0, 0.0, 0.0, 1.0 ];
-
+const RED = Color( 1.0, 0.0, 0.0, 1.0 );
 
 const TEST_TRIANGLE_VERTICES = [
-    0.0, 1.0, 0.0,
-    1.0, -1.0, 0.0,
-    -1.0, -1.0, 0.0
+    Vertex( 0.0, 1.0, 0.0 ),
+    Vertex( 1.0, -1.0, 0.0 ),
+    Vertex( -1.0, -1.0, 0.0 )
 ];
 
 const TEST_TRIANGLE_FACE = [
-    0, 1, 2
+    Face( 0, 1, 2 )
 ];
 
 const TEST_TRIANGLE_COLORS = [
-    1.0, 0.0, 0.0, 1.0,
-    1.0, 0.0, 0.0, 1.0,
-    1.0, 0.0, 0.0, 1.0
+    RED,
+    RED,
+    RED
 ];
 
 var vPosition, vColor;
@@ -40,7 +39,7 @@ window.onload = function init() {
 
     vBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
-    gl.bufferData( gl.ARRAY_BUFFER, new Float32Array( TEST_TRIANGLE_VERTICES ),
+    gl.bufferData( gl.ARRAY_BUFFER, flatten( TEST_TRIANGLE_VERTICES ),
                    gl.STATIC_DRAW );
     vPosition = gl.getAttribLocation( program, "vPosition" );
     gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
@@ -49,12 +48,12 @@ window.onload = function init() {
     iBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ELEMENT_ARRAY_BUFFER, iBuffer );
     gl.bufferData( gl.ELEMENT_ARRAY_BUFFER,
-                   new Uint16Array( TEST_TRIANGLE_FACE ),
+                   flatten( TEST_TRIANGLE_FACE ),
                    gl.STATIC_DRAW );
 
     cBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
-    gl.bufferData( gl.ARRAY_BUFFER, new Float32Array( TEST_TRIANGLE_COLORS ),
+    gl.bufferData( gl.ARRAY_BUFFER, flatten( TEST_TRIANGLE_COLORS ),
                    gl.STATIC_DRAW );
     vColor = gl.getAttribLocation( program, "vColor");
     gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
