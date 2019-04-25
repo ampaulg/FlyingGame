@@ -5,7 +5,8 @@ const {
     Color,
     Vertex,
     Face,
-    flatten
+    flatten,
+    perspectiveViewMat
 } = require( "../MathHelpers" );
 
 test( "argCount has no error when count is correct", () => {
@@ -177,5 +178,33 @@ test( "Flatten rejects arrays of other types", () => {
     var error = "flatten argument is of unsupported type";
     expect(
         () => { flatten( [ 1, 2, 3 ] ) }
+    ).toThrowError( error );
+});
+
+test( "perspectiveViewMat returns correct matrix", () => {
+    var n = 2, f = 4, nearWidth = 1, nearHeight = 4;
+    var output = new Float32Array( [ 4, 0, 0, 0,
+                                     0, 1, 0, 0,
+                                     0, 0, -3, -1,
+                                     0, 0, -8, 0
+                                  ] );
+    expect( perspectiveViewMat( n, f, nearWidth, nearHeight ) ).toEqual( output );
+});
+
+
+test( "perspectiveViewMat fails with incorrect arg count", () => {
+    var error = "Invalid argument count for perspectiveViewMat\n"
+        + "5 given, 4 expected";
+    expect(
+        () => { perspectiveViewMat( 1, 2, 3, 4, 5 ) }
+    ).toThrowError( error );
+});
+
+test( "perspectiveViewMat fails with incorrect arg types", () => {
+        + "5 given, 4 expected";
+    var error = "Invalid argument type for perspectiveViewMat\n"
+        + "arg 3 ( false ) is not a number"
+    expect(
+        () => { perspectiveViewMat( 1, 2, false, 4 ) }
     ).toThrowError( error );
 });

@@ -10,10 +10,13 @@ attribute vec4 vPosition;
 attribute vec4 vColor;
 varying vec4 fColor;
 
+uniform mat4 transMatrix;
+uniform mat4 projMatrix;
+
 void
 main()
 {
-    gl_Position = vPosition;
+    gl_Position = projMatrix * transMatrix * vPosition;
     fColor = vColor;
 }
 </script>

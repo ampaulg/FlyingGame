@@ -101,6 +101,20 @@ function flatten( arr ) {
     return output;
 }
 
+function perspectiveViewMat( near, far, nearWidth, nearHeight ) {
+    checkArgCount( arguments.length, 4, "perspectiveViewMat" );
+    checkArgsAreNumbers( arguments, "perspectiveViewMat" );
+
+    return new Float32Array(
+        [
+            (2*near)/(nearWidth), 0, 0, 0,
+            0, (2*near)/(nearHeight), 0, 0,
+            0, 0, -(far+near)/(far-near), -1,
+            0, 0, -(2*far*near)/(far-near), 0
+        ]
+    );
+}
+
 module.exports = {
     checkArgCount,
     checkArgsAreNumbers,
@@ -108,5 +122,6 @@ module.exports = {
     Color,
     Vertex,
     Face,
-    flatten
+    flatten,
+    perspectiveViewMat
 };
