@@ -2,26 +2,14 @@ var canvas;
 var gl;
 var program;
 
-const RED = Color( 1.0, 0.0, 0.0, 1.0 );
-
-const TEST_TRIANGLE_VERTICES = [
-    Vertex( 0.0, 1.0, 0.0 ),
-    Vertex( 1.0, -1.0, 0.0 ),
-    Vertex( -1.0, -1.0, 0.0 )
-];
-
-const TEST_TRIANGLE_FACE = [
-    Face( 0, 1, 2 )
-];
-
-const TEST_TRIANGLE_COLORS = [
-    RED,
-    RED,
-    RED
-];
-
 var vPosition, vColor;
 var vBuffer, cBuffer, nBuffer, iBuffer;
+
+// constants for projection frustrum
+const NEAR = 1;
+const FAR = 10;
+const N_WIDTH = 2;
+const N_HEIGHT = 2;
 
 window.onload = function init() {
 
@@ -39,7 +27,7 @@ window.onload = function init() {
 
     vBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
-    gl.bufferData( gl.ARRAY_BUFFER, flatten( TEST_TRIANGLE_VERTICES ),
+    gl.bufferData( gl.ARRAY_BUFFER, flatten( EX_CUBE_VERTICES ),
                    gl.STATIC_DRAW );
     vPosition = gl.getAttribLocation( program, "vPosition" );
     gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
@@ -48,21 +36,49 @@ window.onload = function init() {
     iBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ELEMENT_ARRAY_BUFFER, iBuffer );
     gl.bufferData( gl.ELEMENT_ARRAY_BUFFER,
-                   flatten( TEST_TRIANGLE_FACE ),
+                   flatten( EX_CUBE_FACES ),
                    gl.STATIC_DRAW );
 
     cBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
-    gl.bufferData( gl.ARRAY_BUFFER, flatten( TEST_TRIANGLE_COLORS ),
+    gl.bufferData( gl.ARRAY_BUFFER, flatten( EX_CUBE_COLORS ),
                    gl.STATIC_DRAW );
     vColor = gl.getAttribLocation( program, "vColor");
     gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vColor);
 
+    gl.uniformMatrix4fv( gl.getUniformLocation(program, "projMatrix"),
+                         false,
+                         perspectiveViewMat( NEAR, FAR, N_WIDTH, N_HEIGHT ) );
     render();
 };
 
 function render() {
     gl.clear( gl.COLOR_BUFFER_BIT );
-    gl.drawElements( gl.TRIANGLES, 3, gl.UNSIGNED_SHORT, 0 );
+
+    var tMatrix = [
+        [ 1, 0, 0, 0,
+          0, 1, 0, 0,
+          0, 0, 1, 0,
+          -0.5, 0.5, -2, 1 ],
+        [ 1, 0, 0, 0,
+          0, 1, 0, 0,
+          0, 0, 1, 0,
+          0.5, 0.5, -3, 1 ],
+        [ 1, 0, 0, 0,
+          0, 1, 0, 0,
+          0, 0, 1, 0,
+          -0.5, -0.5, -4, 1 ],
+        [ 1, 0, 0, 0,
+          0, 1, 0, 0,
+          0, 0, 1, 0,
+          0.5, -0.5, -5, 1 ]
+    ];
+
+    for ( var i = 0; i < 4; i++ ) {
+        gl.uniformMatrix4fv( gl.getUniformLocation(program, "transMatrix"),
+                             false, new Float32Array( tMatrix[ i ] ) );
+        gl.drawElements( gl.TRIANGLES, EX_CUBE_FACES.length * 3,
+                         gl.UNSIGNED_SHORT, 0 );
+    }
 }
