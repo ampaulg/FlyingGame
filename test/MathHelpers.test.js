@@ -2,26 +2,22 @@ const {
     checkArgCount,
     checkArgsAreNumbers,
     checkArgsAreInts,
+    checkValidArray,
     Color,
     Vertex,
     Face,
-    flatten,
+    flattenObjArray,
+    flattenMatrix,
     perspectiveViewMat
 } = require( "../MathHelpers" );
 
-test( "argCount has no error when count is correct", () => {
+test( "checkArgCount has no error when count is correct", () => {
   expect(
       () => { checkArgCount( 3, 3, "test" ) }
   ).not.toThrow();
 });
 
-test( "argCount throws error when count is wrong", () => {
-    expect(
-        () => { checkArgCount( 3, 2, "test" ) }
-    ).toThrow();
-});
-
-test( "argCount throws correct error message", () => {
+test( "checkArgCount throws error when count is wrong", () => {
     var error = "Invalid argument count for test\n"
         + "3 given, 2 expected";
     expect(
@@ -36,12 +32,6 @@ test( "checkArgsAreNumbers has no error when args are numbers", () => {
 });
 
 test( "checkArgsAreNumbers throws error when args aren't all numbers", () => {
-    expect(
-        () => { checkArgsAreNumbers( [ 1, true, 3 + 5 ], "test" ) }
-    ).toThrow();
-});
-
-test( "checkArgsAreNumbers throws correct error message", () => {
     var error = "Invalid argument type for test\n"
             + "arg 2 ( true ) is not a number"
     expect(
@@ -72,6 +62,26 @@ test( "checkArgsAreInts throws correct error message", () => {
             + "arg 2 ( 5.2 ) is not a non-negative integer"
     expect(
         () => { checkArgsAreInts( [ 1, 5.2, 3 + 5 ], "test" ) }
+    ).toThrowError( error );
+});
+
+test( "checkValidArray has no error on non-empty array", () => {
+    expect(
+        () => { checkValidArray( [ 1, 0, 3 ], "test" ) }
+    ).not.toThrow();
+});
+
+test( "checkValidArray throws error for non-array", () => {
+    var error = "test argument is not an array"
+    expect(
+        () => { checkValidArray( true, "test" ) }
+    ).toThrowError( error );
+});
+
+test( "checkValidArray throws error for empty array", () => {
+    var error = "test argument is an empty array"
+    expect(
+        () => { checkValidArray( [], "test" ) }
     ).toThrowError( error );
 });
 
@@ -133,61 +143,91 @@ test( "Face constructor fails with wrong arg types", () => {
     ).toThrow();
 });
 
-test( "Flatten color works correctly on valid input", () => {
+test( "flattenObjArray on color works correctly on valid input", () => {
     var input = [
         Color( 1, 2.3, 3, 4 ),
         Color( 5, 6, 7.2, 8 )
     ];
     var output = new Float32Array( [ 1, 2.3, 3, 4, 5, 6, 7.2, 8 ] );
-    expect( flatten( input ) ).toEqual( output );
+    expect( flattenObjArray( input ) ).toEqual( output );
 });
 
-test( "Flatten vertex works correctly on valid input", () => {
+test( "flattenObjArray on vertex works correctly on valid input", () => {
     var input = [
         Vertex( 1, 2.3, 3 ),
         Vertex( 5, 6, 7.2 )
     ];
     var output = new Float32Array( [ 1, 2.3, 3, 5, 6, 7.2 ] );
-    expect( flatten( input ) ).toEqual( output );
+    expect( flattenObjArray( input ) ).toEqual( output );
 });
 
-test( "Flatten face works correctly on valid input", () => {
+test( "flattenObjArray on face works correctly on valid input", () => {
     var input = [
         Face( 1, 3, 5 ),
         Face( 7, 6, 2 )
     ];
     var output = new Uint16Array( [ 1, 3, 5, 7, 6, 2 ] );
-    expect( flatten( input ) ).toEqual( output );
+    expect( flattenObjArray( input ) ).toEqual( output );
 });
 
-test( "Flatten rejects non-array", () => {
-    var error = "flatten argument is not an array";
+test( "flattenObjArray rejects non-array", () => {
+    var error = "flattenObjArray argument is not an array";
     expect(
-        () => { flatten( "notAnArray" ) }
+        () => { flattenObjArray( "notAnArray" ) }
     ).toThrowError( error );
 });
 
-test( "Flatten rejects empty array", () => {
-    var error = "flatten argument is an empty array";
+test( "flattenObjArray rejects empty array", () => {
+    var error = "flattenObjArray argument is an empty array";
     expect(
-        () => { flatten( [] ) }
+        () => { flattenObjArray( [] ) }
     ).toThrowError( error );
 });
 
-test( "Flatten rejects arrays of other types", () => {
-    var error = "flatten argument is of unsupported type";
+test( "flattenObjArray rejects arrays of unsupported types", () => {
+    var error = "flattenObjArray argument is of unsupported type";
     expect(
-        () => { flatten( [ 1, 2, 3 ] ) }
+        () => { flattenObjArray( [ 1, 2, 3 ] ) }
+    ).toThrowError( error );
+});
+
+test( "flattenMatrix correctly flattens valid input", () => {
+    var input = [  [ 0, 4, 8, 12 ],
+                   [ 1, 5, 9, 13 ],
+                   [ 2, 6, 10, 14 ],
+                   [ 3, 7, 11,15 ] ];
+    var output = new Float32Array( [ 0, 1, 2, 3, 4, 5, 6, 7, 8,
+                                     9, 10, 11, 12, 13, 14, 15] );
+    expect( flattenMatrix( input ) ).toEqual( output );
+});
+
+test( "flattenMatrix rejects non-array", () => {
+    var error = "flattenMatrix argument is not an array";
+    expect(
+        () => { flattenMatrix( "notAnArray" ) }
+    ).toThrowError( error );
+});
+
+test( "flattenMatrix rejects empty array", () => {
+    var error = "flattenMatrix argument is an empty array";
+    expect(
+        () => { flattenMatrix( [] ) }
+    ).toThrowError( error );
+});
+
+test( "flattenMatrix rejects non-square matrix", () => {
+    var error = "flattenMatrix argument is not a square matrix";
+    expect(
+        () => { flattenMatrix( [ [ 1, 2 ], [ 3 ] ] ) }
     ).toThrowError( error );
 });
 
 test( "perspectiveViewMat returns correct matrix", () => {
     var n = 2, f = 4, nearWidth = 1, nearHeight = 4;
-    var output = new Float32Array( [ 4, 0, 0, 0,
-                                     0, 1, 0, 0,
-                                     0, 0, -3, -1,
-                                     0, 0, -8, 0
-                                  ] );
+    var output = [ [ 4, 0, 0, 0 ],
+                   [ 0, 1, 0, 0 ],
+                   [ 0, 0, -3, -8 ],
+                   [ 0, 0, -1, 0 ] ];
     expect( perspectiveViewMat( n, f, nearWidth, nearHeight ) ).toEqual( output );
 });
 

@@ -25,6 +25,14 @@ function checkArgsAreInts( args, name ) {
     }
 }
 
+function checkValidArray( arr, name ) {
+    if ( !Array.isArray( arr ) ) {
+        throw new Error( name + " argument is not an array" );
+    } else if ( arr.length == 0 ) {
+        throw new Error( name + " argument is an empty array" );
+    }
+}
+
 function Color( r, g, b, a ) {
     checkArgCount( arguments.length, 4, "Color" );
     if ( !( this instanceof Color ) ){
@@ -58,13 +66,8 @@ function Face( v1, v2, v3 ) {
     this.v2 = v2;
     this.v3 = v3;
 }
-
-function flatten( arr ) {
-    if ( !Array.isArray( arr ) ) {
-        throw new Error( "flatten argument is not an array" );
-    } else if ( arr.length == 0 ) {
-        throw new Error( "flatten argument is an empty array" );
-    }
+function flattenObjArray( arr ) {
+    checkValidArray( arr, "flattenObjArray" );
 
     var output = [];
 
@@ -95,33 +98,51 @@ function flatten( arr ) {
             output = new Uint16Array( output );
             break;
         default:
-            throw new Error( "flatten argument is of unsupported type" );
+            throw new Error( "flattenObjArray argument is of unsupported type" );
     }
 
     return output;
+}
+
+function flattenMatrix( mat ) {
+    checkValidArray( mat, "flattenMatrix" );
+
+    for ( var i = 0; i < mat.length; i++ ) {
+        if ( mat[ i ].length != mat.length ) {
+            throw new Error( "flattenMatrix argument is not a square matrix" );
+        }
+    }
+
+    var output = [];
+    for ( var col = 0; col < mat.length; col++ ) {
+        for ( var row = 0; row < mat.length; row++ ) {
+            output.push( mat[ row ][ col ] );
+        }
+    }
+    return new Float32Array( output );
 }
 
 function perspectiveViewMat( near, far, nearWidth, nearHeight ) {
     checkArgCount( arguments.length, 4, "perspectiveViewMat" );
     checkArgsAreNumbers( arguments, "perspectiveViewMat" );
 
-    return new Float32Array(
-        [
-            (2*near)/(nearWidth), 0, 0, 0,
-            0, (2*near)/(nearHeight), 0, 0,
-            0, 0, -(far+near)/(far-near), -1,
-            0, 0, -(2*far*near)/(far-near), 0
-        ]
-    );
+    return [
+            [(2*near)/(nearWidth), 0, 0, 0],
+            [0, (2*near)/(nearHeight), 0, 0],
+            [0, 0, -(far+near)/(far-near), -(2*far*near)/(far-near)],
+            [0, 0, -1, 0]
+        ];
 }
 
 module.exports = {
     checkArgCount,
     checkArgsAreNumbers,
     checkArgsAreInts,
+    checkValidArray,
     Color,
     Vertex,
     Face,
-    flatten,
+    flattenObjArray,
+    flattenMatrix,
     perspectiveViewMat
 };
