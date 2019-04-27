@@ -1,6 +1,11 @@
 {
   "scripts": {
-    "test": "jest"
+    "test": "jest --no-cache"
+  },
+  "jest": {
+    "modulePaths": [
+      "<rootDir>"
+    ]
   },
   "devDependencies": {
     "@babel/core": "^7.4.4",

@@ -96,11 +96,51 @@ function perspectiveViewMat( near, far, nearWidth, nearHeight ) {
         ];
 }
 
+function dot( arr1, arr2 ) {
+    ArgVal.checkValidArray( arr1, "dot" );
+    ArgVal.checkValidArray( arr2, "dot" );
+    if ( arr1.length != arr2.length ) {
+        throw new Error( "dot function called on args with unequal lengths" );
+    }
+
+    var total = 0;
+    for ( var i = 0; i < arr1.length; i++ ) {
+        total += ( arr1[ i ] * arr2[ i ] );
+    }
+    return total;
+}
+
+function matrixMult( mat1, mat2 ) {
+    ArgVal.checkValidArray( mat1, "matrixMult" );
+    ArgVal.checkValidArray( mat2, "matrixMult" );
+    ArgVal.checkArrayLength( mat1, 4, "matrixMult" );
+    ArgVal.checkArrayLength( mat2, 4, "matrixMult" );
+    ArgVal.checkSquareMatrix( mat1, "matrixMult" );
+    ArgVal.checkSquareMatrix( mat2, "matrixMult" );
+
+    var output = [];
+    for ( var row = 0; row < 4; row++ ) {
+        var newRow = [];
+        for ( var col = 0; col < 4; col++ ) {
+            var arr2 = [ mat2[ 0 ][ col ],
+                         mat2[ 1 ][ col ],
+                         mat2[ 2 ][ col ],
+                         mat2[ 3 ][ col ] ];
+            var result = dot( mat1[ row ], arr2 );
+            newRow.push( result );
+        }
+        output.push( newRow );
+    }
+    return output;
+}
+
 export {
     Color,
     Vertex,
     Face,
     flattenObjArray,
     flattenMatrix,
-    perspectiveViewMat
+    perspectiveViewMat,
+    dot,
+    matrixMult
 };
