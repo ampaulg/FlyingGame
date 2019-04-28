@@ -134,6 +134,28 @@ function matrixMult( mat1, mat2 ) {
     return output;
 }
 
+function translationMat( x, y, z ) {
+    ArgVal.checkArgCount( arguments.length, 3, "translationMat" );
+    ArgVal.checkArgsAreNumbers( arguments, "translationMat" );
+    return [
+            [1, 0, 0, x],
+            [0, 1, 0, y],
+            [0, 0, 1, z],
+            [0, 0, 0, 1]
+        ];
+}
+
+function scaleMat( x, y, z ) {
+    ArgVal.checkArgCount( arguments.length, 3, "scaleMat" );
+    ArgVal.checkArgsAreNumbers( arguments, "scaleMat" );
+    return [
+            [x, 0, 0, 0],
+            [0, y, 0, 0],
+            [0, 0, z, 0],
+            [0, 0, 0, 1]
+        ];
+}
+
 export {
     Color,
     Vertex,
@@ -142,5 +164,7 @@ export {
     flattenMatrix,
     perspectiveViewMat,
     dot,
-    matrixMult
+    matrixMult,
+    translationMat,
+    scaleMat
 };

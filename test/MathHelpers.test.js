@@ -1,16 +1,7 @@
-const {
-    Color,
-    Vertex,
-    Face,
-    flattenObjArray,
-    flattenMatrix,
-    perspectiveViewMat,
-    dot,
-    matrixMult
-} = require( "../MathHelpers" );
+import * as Math from '../MathHelpers.js';
 
 test( "Color constructor works with correct args", () => {
-    var color = Color( 0.1, 0.2, 0.3, 0.4 );
+    var color = Math.Color( 0.1, 0.2, 0.3, 0.4 );
     expect( color.r ).toBe( 0.1 );
     expect( color.g ).toBe( 0.2 );
     expect( color.b ).toBe( 0.3 );
@@ -19,18 +10,18 @@ test( "Color constructor works with correct args", () => {
 
 test( "Color constructor fails with wrong arg count", () => {
     expect(
-        () => { Color( 1, 2, 3, 4, 5 ) }
+        () => { Math.Color( 1, 2, 3, 4, 5 ) }
     ).toThrow();
 });
 
 test( "Color constructor fails with wrong arg types", () => {
     expect(
-        () => { Color( 1, 2, 3, true ) }
+        () => { Math.Color( 1, 2, 3, true ) }
     ).toThrow();
 });
 
 test( "Vertex constructor works with correct args", () => {
-    var vertex = Vertex( 0.1, 0.2, 0.3 );
+    var vertex = Math.Vertex( 0.1, 0.2, 0.3 );
     expect( vertex.x ).toBe( 0.1 );
     expect( vertex.y ).toBe( 0.2 );
     expect( vertex.z ).toBe( 0.3 );
@@ -38,18 +29,18 @@ test( "Vertex constructor works with correct args", () => {
 
 test( "Vertex constructor fails with wrong arg count", () => {
     expect(
-        () => { Vertex( 1, 2, 3, 4, 5 ) }
+        () => { Math.Vertex( 1, 2, 3, 4, 5 ) }
     ).toThrow();
 });
 
 test( "Vertex constructor fails with wrong arg types", () => {
     expect(
-        () => { Vertex( 1, 2, 3, true ) }
+        () => { Math.Vertex( 1, 2, 3, true ) }
     ).toThrow();
 });
 
 test( "Face constructor works with correct args", () => {
-    var face = Face( 3, 4, 5 );
+    var face = Math.Face( 3, 4, 5 );
     expect( face.v1 ).toBe( 3 );
     expect( face.v2 ).toBe( 4 );
     expect( face.v3 ).toBe( 5 );
@@ -57,61 +48,61 @@ test( "Face constructor works with correct args", () => {
 
 test( "Face constructor fails with wrong arg count", () => {
     expect(
-        () => { Face( 1, 2, 3, 4, 5 ) }
+        () => { Math.Face( 1, 2, 3, 4, 5 ) }
     ).toThrow();
 });
 
 test( "Face constructor fails with wrong arg types", () => {
     expect(
-        () => { Face( 1, 2, 3.5 ) }
+        () => { Math.Face( 1, 2, 3.5 ) }
     ).toThrow();
 });
 
 test( "flattenObjArray on color works correctly on valid input", () => {
     var input = [
-        Color( 1, 2.3, 3, 4 ),
-        Color( 5, 6, 7.2, 8 )
+        Math.Color( 1, 2.3, 3, 4 ),
+        Math.Color( 5, 6, 7.2, 8 )
     ];
     var output = new Float32Array( [ 1, 2.3, 3, 4, 5, 6, 7.2, 8 ] );
-    expect( flattenObjArray( input ) ).toEqual( output );
+    expect( Math.flattenObjArray( input ) ).toEqual( output );
 });
 
 test( "flattenObjArray on vertex works correctly on valid input", () => {
     var input = [
-        Vertex( 1, 2.3, 3 ),
-        Vertex( 5, 6, 7.2 )
+        Math.Vertex( 1, 2.3, 3 ),
+        Math.Vertex( 5, 6, 7.2 )
     ];
     var output = new Float32Array( [ 1, 2.3, 3, 5, 6, 7.2 ] );
-    expect( flattenObjArray( input ) ).toEqual( output );
+    expect( Math.flattenObjArray( input ) ).toEqual( output );
 });
 
 test( "flattenObjArray on face works correctly on valid input", () => {
     var input = [
-        Face( 1, 3, 5 ),
-        Face( 7, 6, 2 )
+        Math.Face( 1, 3, 5 ),
+        Math.Face( 7, 6, 2 )
     ];
     var output = new Uint16Array( [ 1, 3, 5, 7, 6, 2 ] );
-    expect( flattenObjArray( input ) ).toEqual( output );
+    expect( Math.flattenObjArray( input ) ).toEqual( output );
 });
 
 test( "flattenObjArray rejects non-array", () => {
     var error = "flattenObjArray argument is not an array";
     expect(
-        () => { flattenObjArray( "notAnArray" ) }
+        () => { Math.flattenObjArray( "notAnArray" ) }
     ).toThrowError( error );
 });
 
 test( "flattenObjArray rejects empty array", () => {
     var error = "flattenObjArray argument is an empty array";
     expect(
-        () => { flattenObjArray( [] ) }
+        () => { Math.flattenObjArray( [] ) }
     ).toThrowError( error );
 });
 
 test( "flattenObjArray rejects arrays of unsupported types", () => {
     var error = "flattenObjArray argument is of unsupported type";
     expect(
-        () => { flattenObjArray( [ 1, 2, 3 ] ) }
+        () => { Math.flattenObjArray( [ 1, 2, 3 ] ) }
     ).toThrowError( error );
 });
 
@@ -122,27 +113,27 @@ test( "flattenMatrix correctly flattens valid input", () => {
                    [ 3, 7, 11,15 ] ];
     var output = new Float32Array( [ 0, 1, 2, 3, 4, 5, 6, 7, 8,
                                      9, 10, 11, 12, 13, 14, 15] );
-    expect( flattenMatrix( input ) ).toEqual( output );
+    expect( Math.flattenMatrix( input ) ).toEqual( output );
 });
 
 test( "flattenMatrix rejects non-array", () => {
     var error = "flattenMatrix argument is not an array";
     expect(
-        () => { flattenMatrix( "notAnArray" ) }
+        () => { Math.flattenMatrix( "notAnArray" ) }
     ).toThrowError( error );
 });
 
 test( "flattenMatrix rejects empty array", () => {
     var error = "flattenMatrix argument is an empty array";
     expect(
-        () => { flattenMatrix( [] ) }
+        () => { Math.flattenMatrix( [] ) }
     ).toThrowError( error );
 });
 
 test( "flattenMatrix rejects non-square matrix", () => {
     var error = "flattenMatrix argument is not a square matrix";
     expect(
-        () => { flattenMatrix( [ [ 1, 2 ], [ 3 ] ] ) }
+        () => { Math.flattenMatrix( [ [ 1, 2 ], [ 3 ] ] ) }
     ).toThrowError( error );
 });
 
@@ -152,7 +143,7 @@ test( "perspectiveViewMat returns correct matrix", () => {
                    [ 0, 1, 0, 0 ],
                    [ 0, 0, -3, -8 ],
                    [ 0, 0, -1, 0 ] ];
-    expect( perspectiveViewMat( n, f, nearWidth, nearHeight ) ).toEqual( output );
+    expect( Math.perspectiveViewMat( n, f, nearWidth, nearHeight ) ).toEqual( output );
 });
 
 
@@ -160,7 +151,7 @@ test( "perspectiveViewMat fails with incorrect arg count", () => {
     var error = "Invalid argument count for perspectiveViewMat\n"
         + "5 given, 4 expected";
     expect(
-        () => { perspectiveViewMat( 1, 2, 3, 4, 5 ) }
+        () => { Math.perspectiveViewMat( 1, 2, 3, 4, 5 ) }
     ).toThrowError( error );
 });
 
@@ -168,14 +159,14 @@ test( "perspectiveViewMat fails with incorrect arg types", () => {
     var error = "Invalid argument type for perspectiveViewMat\n"
         + "arg 3 ( false ) is not a number";
     expect(
-        () => { perspectiveViewMat( 1, 2, false, 4 ) }
+        () => { Math.perspectiveViewMat( 1, 2, false, 4 ) }
     ).toThrowError( error );
 });
 
 test( "dot returns correct result for valid input", () => {
     var arr1 = [ 2, 3, 4 ];
     var arr2 = [ 10, 100, 1000 ];
-    expect( dot( arr1, arr2 ) ).toBe( 4320 );
+    expect( Math.dot( arr1, arr2 ) ).toBe( 4320 );
 });
 
 test( "dot throws errors for invalid arrays", () => {
@@ -190,19 +181,19 @@ test( "dot throws errors for invalid arrays", () => {
     var lengthError = "dot function called on args with unequal lengths";
 
     expect(
-        () => { dot( arr1, invalid ) }
+        () => { Math.dot( arr1, invalid ) }
     ).toThrowError( nonArrayError );
     expect(
-        () => { dot( invalid, arr2 ) }
+        () => { Math.dot( invalid, arr2 ) }
     ).toThrowError( nonArrayError );
     expect(
-        () => { dot( arr1, empty ) }
+        () => { Math.dot( arr1, empty ) }
     ).toThrowError( emptyArrayError );
     expect(
-        () => { dot( empty, arr2 ) }
+        () => { Math.dot( empty, arr2 ) }
     ).toThrowError( emptyArrayError );
     expect(
-        () => { dot( arr1, differentLength ) }
+        () => { Math.dot( arr1, differentLength ) }
     ).toThrowError( lengthError );
 });
 
@@ -219,7 +210,7 @@ test( "matrixMult returns correct result for valid input", () => {
                    [ 24, 56, 18, 52 ],
                    [ 58, 95, 71, 92 ],
                    [ 90, 107, 81, 142 ] ];
-    expect( matrixMult( mat1, mat2 ) ).toEqual( output );
+    expect( Math.matrixMult( mat1, mat2 ) ).toEqual( output );
 });
 
 test( "matrixMult throws errors for invalid arrays", () => {
@@ -243,21 +234,65 @@ test( "matrixMult throws errors for invalid arrays", () => {
     var squareError = "matrixMult argument is not a square matrix";
 
     expect(
-        () => { matrixMult( mat1, invalid ) }
+        () => { Math.matrixMult( mat1, invalid ) }
     ).toThrowError( nonArrayError );
     expect(
-        () => { matrixMult( invalid, mat2 ) }
+        () => { Math.matrixMult( invalid, mat2 ) }
     ).toThrowError( nonArrayError );
     expect(
-        () => { matrixMult( mat1, empty ) }
+        () => { Math.matrixMult( mat1, empty ) }
     ).toThrowError( emptyArrayError );
     expect(
-        () => { matrixMult( empty, mat2 ) }
+        () => { Math.matrixMult( empty, mat2 ) }
     ).toThrowError( emptyArrayError );
     expect(
-        () => { matrixMult( mat1, notSquare ) }
+        () => { Math.matrixMult( mat1, notSquare ) }
     ).toThrowError( squareError );
     expect(
-        () => { matrixMult( notSquare, mat2 ) }
+        () => { Math.matrixMult( notSquare, mat2 ) }
     ).toThrowError( squareError );
+});
+
+test( "translationMat returns correct result for valid input", () => {
+    var output = [ [ 1, 0, 0, 2.5 ],
+                   [ 0, 1, 0, 3.6 ],
+                   [ 0, 0, 1, 4.7 ],
+                   [ 0, 0, 0, 1 ] ];
+    expect( Math.translationMat( 2.5, 3.6, 4.7 ) ).toEqual( output );
+});
+
+test( "translationMat throws errors for invalid arrays", () => {
+    var argCountError = "Invalid argument count for translationMat\n"
+       + "4 given, 3 expected";
+    var nonNumberError = "Invalid argument type for translationMat\n"
+        + "arg 2 ( true ) is not a number";
+
+    expect(
+        () => { Math.translationMat( 1, 2, 3, 4 ) }
+    ).toThrowError( argCountError );
+    expect(
+        () => { Math.translationMat( 1, true, 3 ) }
+    ).toThrowError( nonNumberError );
+});
+
+test( "scaleMat returns correct result for valid input", () => {
+    var output = [ [ 0.5, 0, 0, 0 ],
+                   [ 0, 2.5, 0, 0 ],
+                   [ 0, 0, -3.4, 0 ],
+                   [ 0, 0, 0, 1 ] ];
+    expect( Math.scaleMat( 0.5, 2.5, -3.4 ) ).toEqual( output );
+});
+
+test( "translationMat throws errors for invalid arrays", () => {
+    var argCountError = "Invalid argument count for scaleMat\n"
+       + "4 given, 3 expected";
+    var nonNumberError = "Invalid argument type for scaleMat\n"
+        + "arg 2 ( true ) is not a number";
+
+    expect(
+        () => { Math.scaleMat( 1, 2, 3, 4 ) }
+    ).toThrowError( argCountError );
+    expect(
+        () => { Math.scaleMat( 1, true, 3 ) }
+    ).toThrowError( nonNumberError );
 });
