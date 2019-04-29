@@ -156,6 +156,44 @@ function scaleMat( x, y, z ) {
         ];
 }
 
+function degToRad( degrees ) {
+    ArgVal.checkArgCount( arguments.length, 1, "degToRad" );
+    ArgVal.checkArgsAreNumbers( arguments, "degToRad" );
+    return degrees * Math.PI / 180;
+}
+
+function rotationXMat( angle ) {
+    ArgVal.checkArgCount( arguments.length, 1, "rotationXMat" );
+    ArgVal.checkArgsAreNumbers( arguments, "rotationXMat" );
+
+    angle = degToRad( angle );
+    return [ [1, 0, 0, 0],
+             [0, Math.cos( angle ), -Math.sin( angle ), 0],
+             [0, Math.sin( angle ), Math.cos( angle ), 0],
+             [0, 0, 0, 1] ];
+}
+
+function rotationYMat( angle ) {
+    ArgVal.checkArgCount( arguments.length, 1, "rotationYMat" );
+    ArgVal.checkArgsAreNumbers( arguments, "rotationYMat" );
+
+    angle = degToRad( angle );
+    return [ [Math.cos( angle ), 0, Math.sin( angle ), 0],
+             [0, 1, 0, 0],
+             [-Math.sin( angle ), 0, Math.cos( angle ), 0],
+             [0, 0, 0, 1] ];
+}
+
+function rotationZMat( angle ) {
+    ArgVal.checkArgCount( arguments.length, 1, "rotationZMat" );
+    ArgVal.checkArgsAreNumbers( arguments, "rotationZMat" );
+
+    angle = degToRad( angle );
+    return [ [Math.cos( angle ), -Math.sin( angle ), 0, 0],
+             [Math.sin( angle ), Math.cos( angle ), 0, 0],
+             [0, 0, 1, 0],
+             [0, 0, 0, 1] ];
+}
 export {
     Color,
     Vertex,
@@ -166,5 +204,9 @@ export {
     dot,
     matrixMult,
     translationMat,
-    scaleMat
+    scaleMat,
+    degToRad,
+    rotationXMat,
+    rotationYMat,
+    rotationZMat
 };

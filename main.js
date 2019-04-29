@@ -1,4 +1,4 @@
-import * as Math from './MathHelpers.js';
+import * as MyMath from './MathHelpers.js';
 import * as Ex from './ExampleObjects.js';
 
 var canvas;
@@ -30,7 +30,7 @@ window.onload = function init() {
 
     vBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
-    gl.bufferData( gl.ARRAY_BUFFER, Math.flattenObjArray( Ex.CUBE_VERTICES ),
+    gl.bufferData( gl.ARRAY_BUFFER, MyMath.flattenObjArray( Ex.CUBE_VERTICES ),
                    gl.STATIC_DRAW );
     vPosition = gl.getAttribLocation( program, "vPosition" );
     gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
@@ -39,12 +39,12 @@ window.onload = function init() {
     iBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ELEMENT_ARRAY_BUFFER, iBuffer );
     gl.bufferData( gl.ELEMENT_ARRAY_BUFFER,
-                   Math.flattenObjArray( Ex.CUBE_FACES ),
+                   MyMath.flattenObjArray( Ex.CUBE_FACES ),
                    gl.STATIC_DRAW );
 
     cBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
-    gl.bufferData( gl.ARRAY_BUFFER, Math.flattenObjArray( Ex.CUBE_COLORS ),
+    gl.bufferData( gl.ARRAY_BUFFER, MyMath.flattenObjArray( Ex.CUBE_COLORS ),
                    gl.STATIC_DRAW );
     vColor = gl.getAttribLocation( program, "vColor");
     gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
@@ -52,8 +52,8 @@ window.onload = function init() {
 
     gl.uniformMatrix4fv( gl.getUniformLocation(program, "projMatrix"),
                          false,
-                         Math.flattenMatrix(
-                             Math.perspectiveViewMat(
+                         MyMath.flattenMatrix(
+                             MyMath.perspectiveViewMat(
                                  NEAR, FAR, N_WIDTH, N_HEIGHT )
                          ) );
     render();
@@ -61,7 +61,7 @@ window.onload = function init() {
 
 function render() {
     gl.clear( gl.COLOR_BUFFER_BIT );
-
+    
     var tMatrix = [
         [ 1, 0, 0, 0,
           0, 1, 0, 0,
