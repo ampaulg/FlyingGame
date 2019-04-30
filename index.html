@@ -9,6 +9,7 @@ precision mediump float;
 attribute vec4 vPosition;
 attribute vec4 vColor;
 varying vec4 fColor;
+uniform float yMod;
 
 uniform mat4 transMatrix;
 uniform mat4 projMatrix;
@@ -16,7 +17,10 @@ uniform mat4 projMatrix;
 void
 main()
 {
-    gl_Position = projMatrix * transMatrix * vPosition;
+    vec4 newPos = vPosition;
+    newPos.y += yMod;
+    //gl_Position = projMatrix * transMatrix * vPosition;
+    gl_Position = projMatrix * transMatrix * newPos;
     fColor = vColor;
 }
 </script>
@@ -30,7 +34,6 @@ void
 main()
 {
     gl_FragColor = fColor;
-    //gl_FragColor = vec4( 0.0, 1.0, 1.0, 1.0 );
 }
 </script>
 

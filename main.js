@@ -14,6 +14,9 @@ const FAR = 10;
 const N_WIDTH = 2;
 const N_HEIGHT = 2;
 
+const FPS = 30;
+const DRAW_INTERVAL = ( 1/FPS ) * 1000;
+
 window.onload = function init() {
 
     canvas = document.getElementById( "gl-canvas" );
@@ -56,12 +59,18 @@ window.onload = function init() {
                              MyMath.perspectiveViewMat(
                                  NEAR, FAR, N_WIDTH, N_HEIGHT )
                          ) );
-    render();
+
+    window.setInterval( render, DRAW_INTERVAL );
 };
+
+/*
+*/
+var animCounter = 0;
+var yMoveTest = 0;
 
 function render() {
     gl.clear( gl.COLOR_BUFFER_BIT );
-    
+
     var tMatrix = [
         [ 1, 0, 0, 0,
           0, 1, 0, 0,
@@ -80,6 +89,10 @@ function render() {
           0, 0, 1, 0,
           0.5, -0.5, -5, 1 ]
     ];
+
+    animCounter += 2;
+    yMoveTest = Math.sin( MyMath.degToRad( animCounter ) ) / 2;
+    gl.uniform1f( gl.getUniformLocation( program, "yMod" ), yMoveTest );
 
     for ( var i = 0; i < 4; i++ ) {
         gl.uniformMatrix4fv( gl.getUniformLocation(program, "transMatrix"),
