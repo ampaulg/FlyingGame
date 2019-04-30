@@ -14,8 +14,7 @@ const FAR = 10;
 const N_WIDTH = 2;
 const N_HEIGHT = 2;
 
-const FPS = 30;
-const DRAW_INTERVAL = ( 1/FPS ) * 1000;
+var time1;
 
 window.onload = function init() {
 
@@ -60,7 +59,8 @@ window.onload = function init() {
                                  NEAR, FAR, N_WIDTH, N_HEIGHT )
                          ) );
 
-    window.setInterval( render, DRAW_INTERVAL );
+    time1 = Date.now();
+    requestAnimationFrame( render );
 };
 
 /*
@@ -90,7 +90,11 @@ function render() {
           0.5, -0.5, -5, 1 ]
     ];
 
-    animCounter += 2;
+    var time2 = Date.now();
+    var diff = time2 - time1;
+    animCounter += ( diff / 1000 ) * 360 / 2;
+    time1 = time2;
+
     yMoveTest = Math.sin( MyMath.degToRad( animCounter ) ) / 2;
     gl.uniform1f( gl.getUniformLocation( program, "yMod" ), yMoveTest );
 
@@ -100,4 +104,5 @@ function render() {
         gl.drawElements( gl.TRIANGLES, Ex.CUBE_FACES.length * 3,
                          gl.UNSIGNED_SHORT, 0 );
     }
+    requestAnimationFrame( render );
 }
