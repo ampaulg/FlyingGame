@@ -134,6 +134,13 @@ function matrixMult( mat1, mat2 ) {
     return output;
 }
 
+const IDENTITY_MAT = [
+    [1, 0, 0, 0],
+    [0, 1, 0, 0],
+    [0, 0, 1, 0],
+    [0, 0, 0, 1]
+];
+
 function translationMat( x, y, z ) {
     ArgVal.checkArgCount( arguments.length, 3, "translationMat" );
     ArgVal.checkArgsAreNumbers( arguments, "translationMat" );
@@ -144,6 +151,7 @@ function translationMat( x, y, z ) {
             [0, 0, 0, 1]
         ];
 }
+
 
 function scaleMat( x, y, z ) {
     ArgVal.checkArgCount( arguments.length, 3, "scaleMat" );
@@ -194,6 +202,7 @@ function rotationZMat( angle ) {
              [0, 0, 1, 0],
              [0, 0, 0, 1] ];
 }
+
 export {
     Color,
     Vertex,
@@ -203,6 +212,7 @@ export {
     perspectiveViewMat,
     dot,
     matrixMult,
+    IDENTITY_MAT,
     translationMat,
     scaleMat,
     degToRad,
