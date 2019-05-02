@@ -9,7 +9,6 @@ precision mediump float;
 attribute vec4 vPosition;
 attribute vec4 vColor;
 varying vec4 fColor;
-uniform float yMod;
 
 uniform mat4 transMatrix;
 uniform mat4 projMatrix;
@@ -18,8 +17,7 @@ void
 main()
 {
     vec4 newPos = vPosition;
-    newPos.y += yMod;
-    //gl_Position = projMatrix * transMatrix * vPosition;
+    gl_Position = projMatrix * transMatrix * vPosition;
     gl_Position = projMatrix * transMatrix * newPos;
     fColor = vColor;
 }
@@ -39,9 +37,6 @@ main()
 
 <script type="text/javascript" src="Common/webgl-utils.js"></script>
 <script type="text/javascript" src="Common/initShaders.js"></script>
-<script type="module" src="ArgValidators.js"></script>
-<script type="module" src="MathHelpers.js"></script>
-<script type="module" src="ExampleObjects.js"></script>
 <script type="module" src="main.js"></script>
 
 <body>
