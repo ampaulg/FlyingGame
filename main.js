@@ -1,5 +1,5 @@
 import * as MyMath from './MathHelpers.js';
-import * as Game from './GameHelpers.js';
+import * as GameObj from './GameObjects.js';
 import * as Ex from './ExampleObjects.js';
 
 var canvas;
@@ -17,9 +17,9 @@ const N_HEIGHT = 2;
 
 var time1;
 var gameObjects = [
-    new Game.GameObject( Game.GameObjectType.CUBE_1, 0, 0, -3.5 ),
-    new Game.GameObject( Game.GameObjectType.CUBE_2, -2, -2, -3.5 ),
-    new Game.GameObject( Game.GameObjectType.CUBE_3, -2, 2, -3.5 )
+    new GameObj.GameObject( GameObj.GameObjectType.CUBE_1, 0, 0, -3.5 ),
+    new GameObj.GameObject( GameObj.GameObjectType.CUBE_2, -2, -2, -3.5 ),
+    new GameObj.GameObject( GameObj.GameObjectType.CUBE_3, -2, 2, -3.5 )
 ];
 
 window.onload = function init() {

@@ -14,7 +14,7 @@ function getTimeDiff( time1 ) {
 }
 
 function cubeUpdate_1( cube ) {
-    var diff = getTimeDiff( cube.timeStart );
+    var diff = cube.getTimeDiff( cube.timeStart );
     cube.setX( Math.sin( MyMath.degToRad( ( diff / 1000 )
                          * ( 360 / cube.period ) ) ) );
     cube.setXRot( diff / 10 );
@@ -22,14 +22,14 @@ function cubeUpdate_1( cube ) {
 }
 
 function cubeUpdate_2( cube ) {
-    var diff = getTimeDiff( cube.timeStart );
+    var diff = cube.getTimeDiff( cube.timeStart );
     cube.setYScale( ( 1.5  + Math.sin( MyMath.degToRad( ( diff / 1000 )
                                        * ( 360 / cube.period ) ) ) ) );
     cube.updateTransform();
 }
 
 function cubeUpdate_3( cube ) {
-    var diff = getTimeDiff( cube.timeStart );
+    var diff = cube.getTimeDiff( cube.timeStart );
     cube.setYRot( diff / 10 );
     cube.updateTransform();
 }
@@ -43,6 +43,7 @@ function GameObject( type, x, y, z ) {
     this.colors;
 
     this.timeStart = Date.now();
+    this.getTimeDiff = getTimeDiff; // held in obj so I can use a mock to test
     this.transform;
     this.update;
 
