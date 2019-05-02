@@ -1,5 +1,6 @@
 import * as MyMath from './MathHelpers.js';
 import * as Ex from './ExampleObjects.js';
+import * as Ar from './Assets/Arwing.js';
 
 const GameObjectType = {
     SHIP : 0,
@@ -32,6 +33,21 @@ function cubeUpdate_3( cube ) {
     var diff = cube.getTimeDiff( cube.timeStart );
     cube.setYRot( diff / 10 );
     cube.updateTransform();
+}
+
+function shipUpdate( ship ) {
+    var diff = ship.getTimeDiff( ship.timeStart );
+    ship.setZRot( diff / 10 );
+    ship.updateTransform();
+}
+
+function randomColors( length ) {
+    var colors = [];
+    for ( var i = 0; i < length; i++ ) {
+        colors.push( MyMath.Color( Math.random(), Math.random(),
+                                 Math.random(), 1.0 ) );
+    }
+    return colors;
 }
 
 function GameObject( type, x, y, z ) {
@@ -74,6 +90,14 @@ function GameObject( type, x, y, z ) {
             default:
                 throw new Error( "Can't handle that type yet" );
         }
+    } else if ( type == GameObjectType.SHIP ) {
+        this.vertices = Ar.ARWING_VERTICES;
+        this.faces = Ar.ARWING_FACES;
+        this.colors = randomColors( this.vertices.length );
+        this.update = shipUpdate;
+        this.xScale = 0.5;
+        this.yScale = 0.5;
+        this.ZScale = 0.5;
     } else {
         throw new Error( "Can't handle that type yet" );
     }
@@ -89,6 +113,9 @@ function GameObject( type, x, y, z ) {
     }
     this.setYRot = function( newYRot ) {
         this.yRot = newYRot;
+    }
+    this.setZRot = function( newZRot ) {
+        this.zRot = newZRot;
     }
     this.setTransform = function( newTransform ) {
         this.transform = newTransform;

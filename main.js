@@ -19,7 +19,8 @@ var time1;
 var gameObjects = [
     new GameObj.GameObject( GameObj.GameObjectType.CUBE_1, 0, 0, -3.5 ),
     new GameObj.GameObject( GameObj.GameObjectType.CUBE_2, -2, -2, -3.5 ),
-    new GameObj.GameObject( GameObj.GameObjectType.CUBE_3, -2, 2, -3.5 )
+    new GameObj.GameObject( GameObj.GameObjectType.CUBE_3, -2, 2, -3.5 ),
+    new GameObj.GameObject( GameObj.GameObjectType.SHIP, 0, -2, -6 ),
 ];
 
 window.onload = function init() {
