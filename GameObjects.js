@@ -1,6 +1,7 @@
 import * as MyMath from './MathHelpers.js';
 import * as Ex from './ExampleObjects.js';
 import * as Ar from './Assets/Arwing.js';
+import * as Rn from './Assets/Ring.js';
 
 const GameObjectType = {
     SHIP : 0,
@@ -24,7 +25,7 @@ function cubeUpdate_1( cube ) {
 
 function cubeUpdate_2( cube ) {
     var diff = cube.getTimeDiff( cube.timeStart );
-    cube.setYScale( ( 1.5  + Math.sin( MyMath.degToRad( ( diff / 1000 )
+    cube.setYScale( ( 1.5 + Math.sin( MyMath.degToRad( ( diff / 1000 )
                                        * ( 360 / cube.period ) ) ) ) );
     cube.updateTransform();
 }
@@ -41,6 +42,18 @@ function shipUpdate( ship ) {
     ship.setXRot( diff / 30 );
     ship.updateTransform();
 }
+
+function ringUpdate( ring ) {
+    var diff = ring.getTimeDiff( ring.timeStart );
+    ring.setZRot( diff / 20 );
+    var scale = 1 + ( Math.sin( MyMath.degToRad( ( diff / 1000 )
+                                       * ( 360 / ring.period ) ) ) ) / 3;
+    ring.setXScale( scale );
+    ring.setYScale( scale );
+    ring.setZScale( scale );
+    ring.updateTransform();
+}
+
 
 function randomColors( length ) {
     var colors = [];
@@ -65,6 +78,16 @@ function getArwingDefaultColors( ids ) {
     var colors = [];
     for ( var i = 0; i < ids.length; i++ ) {
         colors.push( ARWING_DEFAULT_COLORS[ ids[ i ] ] );
+    }
+    return colors
+}
+
+const RING_GOLD = MyMath.Color( 0.85, 0.65, 0.13, 1.0 );
+
+function getRingColors( count ) {
+    var colors = [];
+    for ( var i = 0; i < count; i++ ) {
+        colors.push( RING_GOLD );
     }
     return colors
 }
@@ -109,20 +132,37 @@ function GameObject( type, x, y, z ) {
             default:
                 throw new Error( "Can't handle that type yet" );
         }
-    } else if ( type == GameObjectType.SHIP ) {
-        this.vertices = Ar.ARWING_VERTICES;
-        this.faces = Ar.ARWING_FACES;
-        this.colors = getArwingDefaultColors( Ar.ARWING_COLOR_IDS );
-        this.update = shipUpdate;
     } else {
-        throw new Error( "Can't handle that type yet" );
+        switch ( type ) {
+            case GameObjectType.SHIP:
+                this.vertices = Ar.ARWING_VERTICES;
+                this.faces = Ar.ARWING_FACES;
+                this.colors = getArwingDefaultColors( Ar.ARWING_COLOR_IDS );
+                this.update = shipUpdate;
+                break;
+            case GameObjectType.RING:
+                this.vertices = Rn.RING_VERTICES;
+                this.faces = Rn.RING_FACES;
+                this.colors = getRingColors( this.vertices.length );
+                this.update = ringUpdate;
+                this.period = 3;
+                break;
+            default:
+                throw new Error( "Can't handle that type" );
+        }
     }
 
     this.setX = function( newX ) {
         this.xPos = newX;
     }
+    this.setXScale = function( newXScale ) {
+        this.xScale = newXScale;
+    }
     this.setYScale = function( newYScale ) {
         this.yScale = newYScale;
+    }
+    this.setZScale = function( newZScale ) {
+        this.zScale = newZScale;
     }
     this.setXRot = function( newXRot ) {
         this.xRot = newXRot;

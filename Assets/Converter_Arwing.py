@@ -1,8 +1,5 @@
 f = open( "OBJ Files/Arwing.obj", "r")
 
-# this value can be found out with an initial pass to make it more dynamic
-# but in this case it doesn't need to be dynamic
-# might actually do the pass when importing the rings
 VERTEX_COUNT = 123
 
 BLACK = 0

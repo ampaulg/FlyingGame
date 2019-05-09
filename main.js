@@ -17,7 +17,8 @@ const N_HEIGHT = 2;
 
 var time1;
 var gameObjects = [
-    new GameObj.GameObject( GameObj.GameObjectType.SHIP, 0, 0, -8 )
+    new GameObj.GameObject( GameObj.GameObjectType.SHIP, 0, 0, -8 ),
+    new GameObj.GameObject( GameObj.GameObjectType.RING, -3, -3, -8 )
 ];
 
 const SHOW_EXAMPLE_CUBES = true;
