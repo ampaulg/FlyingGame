@@ -59,6 +59,25 @@ test( "Face constructor fails with wrong arg types", () => {
     ).toThrow();
 });
 
+test( "Normal constructor works with correct args", () => {
+    var normal = MyMath.Normal( 3, 4, 5 );
+    expect( normal.x ).toBe( 3 );
+    expect( normal.y ).toBe( 4 );
+    expect( normal.z ).toBe( 5 );
+});
+
+test( "Normal constructor fails with wrong arg count", () => {
+    expect(
+        () => { MyMath.Normal( 1, 2, 3, 4, 5 ) }
+    ).toThrow();
+});
+
+test( "Nomral constructor fails with wrong arg types", () => {
+    expect(
+        () => { MyMath.Normal( 1, true, 3 ) }
+    ).toThrow();
+});
+
 test( "flattenObjArray on color works correctly on valid input", () => {
     var input = [
         MyMath.Color( 1, 2.3, 3, 4 ),

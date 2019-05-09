@@ -26,13 +26,3 @@ test( "Update changes values appropriately", () => {
     expect( mockDiff.mock.calls.length ).toBe( 1 );
     expect( TestObj.yRot ).toBeCloseTo( 1.0/10, 10 );
 });
-
-test( "Fail on currently unsupported types", () => {
-
-    var typeError = "Can't handle that type yet";
-    GameObj.GameObject( GameObj.GameObjectType.CUBE_3, 1.5, 2.6, 3.7 )
-    expect(
-      () => { GameObj.GameObject( GameObj.GameObjectType.SHIP,
-                                  1.5, 2.6, 3.7 ) }
-    ).toThrowError( typeError );
-});
