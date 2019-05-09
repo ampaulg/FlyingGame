@@ -1,5 +1,6 @@
 import * as MyMath from './MathHelpers.js';
 import * as Ex from './ExampleObjects.js';
+import * as Ar from './Assets/Arwing.js';
 
 const GameObjectType = {
     SHIP : 0,
@@ -32,6 +33,40 @@ function cubeUpdate_3( cube ) {
     var diff = cube.getTimeDiff( cube.timeStart );
     cube.setYRot( diff / 10 );
     cube.updateTransform();
+}
+
+function shipUpdate( ship ) {
+    var diff = ship.getTimeDiff( ship.timeStart );
+    ship.setYRot( diff / 20 );
+    ship.setXRot( diff / 30 );
+    ship.updateTransform();
+}
+
+function randomColors( length ) {
+    var colors = [];
+    for ( var i = 0; i < length; i++ ) {
+        colors.push( MyMath.Color( Math.random(), Math.random(),
+                                 Math.random(), 1.0 ) );
+    }
+    return colors;
+}
+
+const ARWING_BLACK = MyMath.Color( 0.1, 0.1, 0.1, 1.0 );
+const ARWING_MAIN_COLOR = MyMath.Color( 0.8, 0.8, 0.8, 1.0 );
+const ARWING_SECONDARY_COLOR = MyMath.Color( 0.24, 0.24, 0.63, 1.0 );
+
+const ARWING_DEFAULT_COLORS = [
+	ARWING_BLACK,
+	ARWING_MAIN_COLOR,
+	ARWING_SECONDARY_COLOR
+];
+
+function getArwingDefaultColors( ids ) {
+    var colors = [];
+    for ( var i = 0; i < ids.length; i++ ) {
+        colors.push( ARWING_DEFAULT_COLORS[ ids[ i ] ] );
+    }
+    return colors
 }
 
 function GameObject( type, x, y, z ) {
@@ -74,6 +109,11 @@ function GameObject( type, x, y, z ) {
             default:
                 throw new Error( "Can't handle that type yet" );
         }
+    } else if ( type == GameObjectType.SHIP ) {
+        this.vertices = Ar.ARWING_VERTICES;
+        this.faces = Ar.ARWING_FACES;
+        this.colors = getArwingDefaultColors( Ar.ARWING_COLOR_IDS );
+        this.update = shipUpdate;
     } else {
         throw new Error( "Can't handle that type yet" );
     }
@@ -89,6 +129,9 @@ function GameObject( type, x, y, z ) {
     }
     this.setYRot = function( newYRot ) {
         this.yRot = newYRot;
+    }
+    this.setZRot = function( newZRot ) {
+        this.zRot = newZRot;
     }
     this.setTransform = function( newTransform ) {
         this.transform = newTransform;

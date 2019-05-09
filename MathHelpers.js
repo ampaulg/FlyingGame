@@ -33,6 +33,18 @@ function Face( v1, v2, v3 ) {
     this.v2 = v2;
     this.v3 = v3;
 }
+
+function Normal( x, y, z ) {
+    ArgVal.checkArgCount( arguments.length, 3, "Normal" );
+    if ( !( this instanceof Normal ) ){
+        return new Normal( x, y, z );
+    }
+    ArgVal.checkArgsAreNumbers( arguments, "Normal" );
+    this.x = x;
+    this.y = y;
+    this.z = z;
+}
+
 function flattenObjArray( arr ) {
     ArgVal.checkValidArray( arr, "flattenObjArray" );
 
@@ -207,6 +219,7 @@ export {
     Color,
     Vertex,
     Face,
+    Normal,
     flattenObjArray,
     flattenMatrix,
     perspectiveViewMat,

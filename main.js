@@ -11,16 +11,16 @@ var vBuffer, cBuffer, nBuffer, iBuffer;
 
 // constants for projection frustrum
 const NEAR = 1;
-const FAR = 10;
+const FAR = 100;
 const N_WIDTH = 2;
 const N_HEIGHT = 2;
 
 var time1;
 var gameObjects = [
-    new GameObj.GameObject( GameObj.GameObjectType.CUBE_1, 0, 0, -3.5 ),
-    new GameObj.GameObject( GameObj.GameObjectType.CUBE_2, -2, -2, -3.5 ),
-    new GameObj.GameObject( GameObj.GameObjectType.CUBE_3, -2, 2, -3.5 )
+    new GameObj.GameObject( GameObj.GameObjectType.SHIP, 0, 0, -8 )
 ];
+
+const SHOW_EXAMPLE_CUBES = true;
 
 window.onload = function init() {
 
@@ -58,6 +58,9 @@ window.onload = function init() {
                                  NEAR, FAR, N_WIDTH, N_HEIGHT )
                          ) );
 
+    if ( SHOW_EXAMPLE_CUBES ) {
+        addExampleCubes();
+    }
     requestAnimationFrame( render );
 };
 
@@ -88,4 +91,12 @@ function drawGameObjects() {
         gl.drawElements( gl.TRIANGLES, gameObjects[ i ].faces.length * 3,
                          gl.UNSIGNED_SHORT, 0 );
     }
+}
+
+function addExampleCubes() {
+    gameObjects.push(
+        new GameObj.GameObject( GameObj.GameObjectType.CUBE_1, 0, -2, -3.5 ),
+        new GameObj.GameObject( GameObj.GameObjectType.CUBE_2, 2, 2, -3.5 ),
+        new GameObj.GameObject( GameObj.GameObjectType.CUBE_3, -2, 2, -3.5 )
+    );
 }
