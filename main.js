@@ -1,13 +1,12 @@
 import * as MyMath from './MathHelpers.js';
 import * as GameObj from './GameObjects.js';
-import * as Ex from './ExampleObjects.js';
 
 var canvas;
 var gl;
 var program;
 
-var vPosition, vColor;
-var vBuffer, cBuffer, nBuffer, iBuffer;
+var vPosition, vNormal, vColor;
+var vBuffer, cBuffer, nBuffer;
 
 // constants for projection frustrum
 const NEAR = 1;
@@ -20,8 +19,6 @@ var gameObjects = [
     new GameObj.GameObject( GameObj.GameObjectType.SHIP, 0, 0, -8 ),
     new GameObj.GameObject( GameObj.GameObjectType.RING, -3, -3, -8 )
 ];
-
-const SHOW_EXAMPLE_CUBES = true;
 
 window.onload = function init() {
 
@@ -43,14 +40,17 @@ window.onload = function init() {
     gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vPosition );
 
-    iBuffer = gl.createBuffer();
-    gl.bindBuffer( gl.ELEMENT_ARRAY_BUFFER, iBuffer );
+    nBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, nBuffer);
+    vNormal = gl.getAttribLocation( program, "vNormal" );
+    gl.vertexAttribPointer( vNormal, 3, gl.FLOAT, false, 0, 0 );
+    gl.enableVertexAttribArray( vNormal );
 
     cBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
     vColor = gl.getAttribLocation( program, "vColor");
     gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(vColor);
+    gl.enableVertexAttribArray( vColor );
 
     gl.uniformMatrix4fv( gl.getUniformLocation(program, "projMatrix"),
                          false,
@@ -59,9 +59,6 @@ window.onload = function init() {
                                  NEAR, FAR, N_WIDTH, N_HEIGHT )
                          ) );
 
-    if ( SHOW_EXAMPLE_CUBES ) {
-        addExampleCubes();
-    }
     requestAnimationFrame( render );
 };
 
@@ -74,30 +71,25 @@ function render() {
 function drawGameObjects() {
     for ( var i = 0; i < gameObjects.length; i++ ) {
         gameObjects[ i ].update( gameObjects[ i ] );
-        gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
+        gl.bindBuffer( gl.ARRAY_BUFFER, vBuffer);
         gl.bufferData( gl.ARRAY_BUFFER,
                        MyMath.flattenObjArray( gameObjects[ i ].vertices ),
                        gl.STATIC_DRAW );
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, iBuffer);
-        gl.bufferData( gl.ELEMENT_ARRAY_BUFFER,
-                       MyMath.flattenObjArray( gameObjects[ i ].faces ),
+        gl.bindBuffer( gl.ARRAY_BUFFER, nBuffer);
+        gl.bufferData( gl.ARRAY_BUFFER,
+                       MyMath.flattenObjArray( gameObjects[ i ].normals ),
                        gl.STATIC_DRAW );
-        gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
+
+        gl.bindBuffer( gl.ARRAY_BUFFER, cBuffer);
         gl.bufferData( gl.ARRAY_BUFFER,
                        MyMath.flattenObjArray( gameObjects[ i ].colors ),
                        gl.STATIC_DRAW );
         gl.uniformMatrix4fv( gl.getUniformLocation(program, "transMatrix"),
                              false,
                              MyMath.flattenMatrix( gameObjects[ i ].transform ) );
-        gl.drawElements( gl.TRIANGLES, gameObjects[ i ].faces.length * 3,
-                         gl.UNSIGNED_SHORT, 0 );
+        gl.uniformMatrix4fv( gl.getUniformLocation(program, "rotMatrix"),
+                             false,
+                             MyMath.flattenMatrix( gameObjects[ i ].getRotMatrix() ) );
+        gl.drawArrays( gl.TRIANGLES, 0, gameObjects[ i ].vertices.length );
     }
-}
-
-function addExampleCubes() {
-    gameObjects.push(
-        new GameObj.GameObject( GameObj.GameObjectType.CUBE_1, 0, -2, -3.5 ),
-        new GameObj.GameObject( GameObj.GameObjectType.CUBE_2, 2, 2, -3.5 ),
-        new GameObj.GameObject( GameObj.GameObjectType.CUBE_3, -2, 2, -3.5 )
-    );
 }

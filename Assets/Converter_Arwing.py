@@ -1,7 +1,5 @@
 f = open( "OBJ Files/Arwing.obj", "r")
 
-VERTEX_COUNT = 123
-
 BLACK = 0
 COLOUR1 = 1
 COLOUR2 = 2
@@ -26,16 +24,27 @@ materials = [ blackMaterials,
               color2Materials ]
 
 vertices = []
-faces = []
+normals = []
 colorIDs = []
-colorMap = [ [ None ] * VERTEX_COUNT,
-             [ None ] * VERTEX_COUNT,
-             [ None ] * VERTEX_COUNT ]
 
-# first pass, populate the above
+# first pass, get the vertices and normals
 
-currentMapId = None
-vertexCount = 0
+normalMap = []
+vertexMap = []
+
+for x in f:
+    line = x.split()
+    if len( line ) > 0:
+        if line[ 0 ] == "vn":
+            normalMap.append( "MyMath.Normal( " + line[ 1 ] + ", " + line[ 2 ] + ", " + line[ 3 ] + " )" )
+        if line[ 0 ] == "v":
+            vertexMap.append( "MyMath.Vertex( " + line[ 1 ] + ", " + line[ 2 ] + ", " + line[ 3 ] + " )" )
+
+# second pass, make the arrays that are gonna be sent
+
+f.seek( 0 )
+
+currentColorId = None
 
 for x in f:
     line = x.split()
@@ -43,47 +52,21 @@ for x in f:
         if line[ 0 ] == "usemtl":
             for i in range( 0, 3 ):
                 if line[ 1 ] in materials[ i ]:
-                    currentMapId = i
-                    break
-        elif line[ 0 ] == "v":
-            vertices.append( "MyMath.Vertex( " + line[ 1 ] + ", " + line[ 2 ] + ", " + line[ 3 ] + " )" )
-            colorMap[ currentMapId ][ vertexCount ] = vertexCount
-            colorIDs.append( currentMapId )
-            vertexCount += 1
-
-# second pass, see if any more vertices need adding
-# checks with the faces
-count = 0
-
-f = open( "OBJ Files/Arwing.obj", "r")
-
-for x in f:
-    line = x.split()
-    if len( line ) > 0:
-        if line[ 0 ] == "usemtl":
-            for i in range( 0, 3 ):
-                if line[ 1 ] in materials[ i ]:
-                    currentMapId = i
+                    currentColorId = i
                     break
         elif line[ 0 ] == "f":
-            # check that all vertices belong to the current colour
-            rawPoints = [ int( line[ 1 ].split( "/" )[ 0 ] ) - 1,
-                       int( line[ 2 ].split( "/" )[ 0 ] ) - 1,
-                       int( line[ 3 ].split( "/" )[ 0 ] ) - 1 ]
-            facePoints = []
-            for p in rawPoints:
-                if colorMap[ currentMapId ][ p ] is None:
-                    vertices.append( vertices[ p ] )
-                    colorMap[ currentMapId ][ p ] = vertexCount
-                    colorIDs.append( currentMapId )
-                    facePoints.append( str( vertexCount ) )
-                    vertexCount += 1
-                else:
-                    facePoints.append( str( colorMap[ currentMapId ][ p ] ) )
-            faces.append( "MyMath.Face( " + facePoints[ 0 ] + ", " + facePoints[ 1 ] + ", " + facePoints[ 2 ] + " )" )
-            count += 1
+            vertexIDs = [ int( line[ 1 ].split( "/" )[ 0 ] ) - 1,
+                          int( line[ 2 ].split( "/" )[ 0 ] ) - 1,
+                          int( line[ 3 ].split( "/" )[ 0 ] ) - 1 ]
+            normalIDs = [ int( line[ 1 ].split( "/" )[ 2 ] ) - 1,
+                          int( line[ 2 ].split( "/" )[ 2 ] ) - 1,
+                          int( line[ 3 ].split( "/" )[ 2 ] ) - 1 ]
+            vertices.extend( [ vertexMap[ vertexIDs[ 0 ] ], vertexMap[ vertexIDs[ 1 ] ], vertexMap[ vertexIDs[ 2 ] ] ] )
+            normals.extend( [ normalMap[ normalIDs[ 0 ] ], normalMap[ normalIDs[ 1 ] ], normalMap[ normalIDs[ 2 ] ] ] )
+            colorIDs.extend( [ currentColorId, currentColorId, currentColorId ] )
 
-# export vertices, faces, and color IDs
+# export vertices, normals, and color IDs
+
 f2 = open( "Arwing.js", "w" )
 f2.write( "import * as MyMath from '../MathHelpers.js';\n\n" );
 f2.write( "const ARWING_VERTICES = [\n" )
@@ -92,11 +75,11 @@ for i, v in enumerate( vertices ):
         f2.write( ",\n" )
     f2.write( "\t" + v )
 f2.write( "\n];\n\n" )
-f2.write( "const ARWING_FACES = [\n" )
-for i, f in enumerate( faces ):
+f2.write( "const ARWING_NORMALS = [\n" )
+for i, n in enumerate( normals ):
     if i > 0:
         f2.write( ",\n" )
-    f2.write( "\t" + f )
+    f2.write( "\t" + n )
 f2.write( "\n];\n\n" )
 f2.write( "const ARWING_COLOR_IDS = [\n" )
 for i, c in enumerate( colorIDs ):
@@ -104,4 +87,6 @@ for i, c in enumerate( colorIDs ):
         f2.write( ",\n" )
     f2.write( "\t" + str( c ) )
 f2.write( "\n];\n\n" )
-f2.write( "export {\n\tARWING_VERTICES,\n\tARWING_FACES,\n\tARWING_COLOR_IDS\n};" )
+f2.write( "export {\n\tARWING_VERTICES,\n\tARWING_NORMALS,\n\tARWING_COLOR_IDS\n};" )
+
+input( "press Enter" )

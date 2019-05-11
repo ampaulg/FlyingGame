@@ -40,25 +40,6 @@ test( "Vertex constructor fails with wrong arg types", () => {
     ).toThrow();
 });
 
-test( "Face constructor works with correct args", () => {
-    var face = MyMath.Face( 3, 4, 5 );
-    expect( face.v1 ).toBe( 3 );
-    expect( face.v2 ).toBe( 4 );
-    expect( face.v3 ).toBe( 5 );
-});
-
-test( "Face constructor fails with wrong arg count", () => {
-    expect(
-        () => { MyMath.Face( 1, 2, 3, 4, 5 ) }
-    ).toThrow();
-});
-
-test( "Face constructor fails with wrong arg types", () => {
-    expect(
-        () => { MyMath.Face( 1, 2, 3.5 ) }
-    ).toThrow();
-});
-
 test( "Normal constructor works with correct args", () => {
     var normal = MyMath.Normal( 3, 4, 5 );
     expect( normal.x ).toBe( 3 );
@@ -96,12 +77,12 @@ test( "flattenObjArray on vertex works correctly on valid input", () => {
     expect( MyMath.flattenObjArray( input ) ).toEqual( expected );
 });
 
-test( "flattenObjArray on face works correctly on valid input", () => {
+test( "flattenObjArray on normal works correctly on valid input", () => {
     var input = [
-        MyMath.Face( 1, 3, 5 ),
-        MyMath.Face( 7, 6, 2 )
+        MyMath.Normal( 1, 2.3, 5.78 ),
+        MyMath.Normal( 7.2, 6.4, 2.77 )
     ];
-    var expected = new Uint16Array( [ 1, 3, 5, 7, 6, 2 ] );
+    var expected = new Float32Array( [ 1, 2.3, 5.78, 7.2, 6.4, 2.77 ] );
     expect( MyMath.flattenObjArray( input ) ).toEqual( expected );
 });
 

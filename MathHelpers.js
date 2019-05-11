@@ -23,17 +23,6 @@ function Vertex( x, y, z ) {
     this.z = z;
 }
 
-function Face( v1, v2, v3 ) {
-    ArgVal.checkArgCount( arguments.length, 3, "Face" );
-    if ( !( this instanceof Face ) ){
-        return new Face( v1, v2, v3 );
-    }
-    ArgVal.checkArgsAreInts( arguments, "Face" );
-    this.v1 = v1;
-    this.v2 = v2;
-    this.v3 = v3;
-}
-
 function Normal( x, y, z ) {
     ArgVal.checkArgCount( arguments.length, 3, "Normal" );
     if ( !( this instanceof Normal ) ){
@@ -68,13 +57,13 @@ function flattenObjArray( arr ) {
             }
             output = new Float32Array( output );
             break;
-        case "Face":
+        case "Normal":
             for ( var i = 0; i < arr.length; i++ ) {
-                output.push( arr[ i ].v1 );
-                output.push( arr[ i ].v2 );
-                output.push( arr[ i ].v3 );
+                output.push( arr[ i ].x );
+                output.push( arr[ i ].y );
+                output.push( arr[ i ].z );
             }
-            output = new Uint16Array( output );
+            output = new Float32Array( output );
             break;
         default:
             throw new Error( "flattenObjArray argument is of unsupported type" );
@@ -218,7 +207,6 @@ function rotationZMat( angle ) {
 export {
     Color,
     Vertex,
-    Face,
     Normal,
     flattenObjArray,
     flattenMatrix,

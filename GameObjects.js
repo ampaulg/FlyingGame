@@ -1,45 +1,20 @@
 import * as MyMath from './MathHelpers.js';
-import * as Ex from './ExampleObjects.js';
 import * as Ar from './Assets/Arwing.js';
 import * as Rn from './Assets/Ring.js';
 
 const GameObjectType = {
     SHIP : 0,
-    RING : 1,
-    CUBE_1 : 2,
-    CUBE_2 : 3,
-    CUBE_3 : 4
+    RING : 1
 }
 
 function getTimeDiff( time1 ) {
     return Date.now() - time1;
 }
 
-function cubeUpdate_1( cube ) {
-    var diff = cube.getTimeDiff( cube.timeStart );
-    cube.setX( Math.sin( MyMath.degToRad( ( diff / 1000 )
-                         * ( 360 / cube.period ) ) ) );
-    cube.setXRot( diff / 10 );
-    cube.updateTransform();
-}
-
-function cubeUpdate_2( cube ) {
-    var diff = cube.getTimeDiff( cube.timeStart );
-    cube.setYScale( ( 1.5 + Math.sin( MyMath.degToRad( ( diff / 1000 )
-                                       * ( 360 / cube.period ) ) ) ) );
-    cube.updateTransform();
-}
-
-function cubeUpdate_3( cube ) {
-    var diff = cube.getTimeDiff( cube.timeStart );
-    cube.setYRot( diff / 10 );
-    cube.updateTransform();
-}
-
 function shipUpdate( ship ) {
     var diff = ship.getTimeDiff( ship.timeStart );
-    ship.setYRot( diff / 20 );
     ship.setXRot( diff / 30 );
+    ship.setYRot( diff / 20 );
     ship.updateTransform();
 }
 
@@ -53,7 +28,6 @@ function ringUpdate( ring ) {
     ring.setZScale( scale );
     ring.updateTransform();
 }
-
 
 function randomColors( length ) {
     var colors = [];
@@ -97,7 +71,7 @@ function GameObject( type, x, y, z ) {
     this.yPos = y;
     this.zPos = z;
     this.vertices;
-    this.faces;
+    this.normals;
     this.colors;
 
     this.timeStart = Date.now();
@@ -113,43 +87,22 @@ function GameObject( type, x, y, z ) {
     this.yRot = 0;
     this.zRot = 0;
 
-    if ( type > 1 ) {
-        this.vertices = Ex.CUBE_VERTICES;
-        this.faces = Ex.CUBE_FACES;
-        this.colors = Ex.CUBE_COLORS;
-        switch ( type ) {
-            case GameObjectType.CUBE_1:
-                this.update = cubeUpdate_1;
-                this.period = 3;
-                break;
-            case GameObjectType.CUBE_2:
-                this.update = cubeUpdate_2;
-                this.period = 2;
-                break;
-            case GameObjectType.CUBE_3:
-                this.update = cubeUpdate_3;
-                break;
-            default:
-                throw new Error( "Can't handle that type yet" );
-        }
-    } else {
-        switch ( type ) {
-            case GameObjectType.SHIP:
-                this.vertices = Ar.ARWING_VERTICES;
-                this.faces = Ar.ARWING_FACES;
-                this.colors = getArwingDefaultColors( Ar.ARWING_COLOR_IDS );
-                this.update = shipUpdate;
-                break;
-            case GameObjectType.RING:
-                this.vertices = Rn.RING_VERTICES;
-                this.faces = Rn.RING_FACES;
-                this.colors = getRingColors( this.vertices.length );
-                this.update = ringUpdate;
-                this.period = 3;
-                break;
-            default:
-                throw new Error( "Can't handle that type" );
-        }
+    switch ( type ) {
+        case GameObjectType.SHIP:
+            this.vertices = Ar.ARWING_VERTICES;
+            this.normals = Ar.ARWING_NORMALS;
+            this.colors = getArwingDefaultColors( Ar.ARWING_COLOR_IDS );
+            this.update = shipUpdate;
+            break;
+        case GameObjectType.RING:
+            this.vertices = Rn.RING_VERTICES;
+            this.normals = Rn.RING_NORMALS;
+            this.colors = getRingColors( this.vertices.length );
+            this.update = ringUpdate;
+            this.period = 3;
+            break;
+        default:
+            throw new Error( "Can't handle that type" );
     }
 
     this.setX = function( newX ) {
@@ -203,6 +156,27 @@ function GameObject( type, x, y, z ) {
                 extraMatrices[ i ]
             );
         }
+    }
+
+    this.getRotMatrix = function() {
+        var extraMatrices = [];
+        if ( this.xRot != 0 ) {
+            extraMatrices.push( MyMath.rotationXMat( this.xRot ) );
+        }
+        if ( this.yRot != 0 ) {
+            extraMatrices.push( MyMath.rotationYMat( this.yRot ) );
+        }
+        if ( this.zRot != 0 ) {
+            extraMatrices.push( MyMath.rotationZMat( this.zRot ) );
+        }
+
+        var rotMatrix = MyMath.IDENTITY_MAT;
+
+        for ( var i = 0; i < extraMatrices.length; i++ ) {
+            rotMatrix = MyMath.matrixMult( rotMatrix, extraMatrices[ i ] );
+        }
+
+        return rotMatrix;
     }
 }
 

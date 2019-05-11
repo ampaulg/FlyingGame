@@ -4,7 +4,7 @@ var TestObj;
 const mockDiff = jest.fn( time => 1 );
 
 beforeEach( () => {
-    TestObj = new GameObj.GameObject( GameObj.GameObjectType.CUBE_3,
+    TestObj = new GameObj.GameObject( GameObj.GameObjectType.RING,
                                       1.5, 2.6, 3.7 );
     TestObj.getTimeDiff = mockDiff;
 });
@@ -24,5 +24,5 @@ test( "Constructor sets values properly", () => {
 test( "Update changes values appropriately", () => {
     TestObj.update( TestObj );
     expect( mockDiff.mock.calls.length ).toBe( 1 );
-    expect( TestObj.yRot ).toBeCloseTo( 1.0/10, 10 );
+    expect( TestObj.zRot ).toBeCloseTo( 1/20, 10 );
 });
