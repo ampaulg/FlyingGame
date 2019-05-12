@@ -14,11 +14,19 @@ const FAR = 100;
 const N_WIDTH = 2;
 const N_HEIGHT = 2;
 
+const AMBIENT_LIGHT = 0.3;
+const DIFFUSE_RANGE = 0.7;
+
 var time1;
 var gameObjects = [
     new GameObj.GameObject( GameObj.GameObjectType.SHIP, 0, 0, -8 ),
-    new GameObj.GameObject( GameObj.GameObjectType.RING, -3, -3, -8 )
+    new GameObj.GameObject( GameObj.GameObjectType.RING, -3, -3, -9 ),
+    new GameObj.GameObject( GameObj.GameObjectType.RING, 3, -3, -9 ),
+    new GameObj.GameObject( GameObj.GameObjectType.RING, 3, 3, -9 ),
+    new GameObj.GameObject( GameObj.GameObjectType.RING, -3, 3, -9 )
 ];
+
+var LIGHT_POS = [ 5, 0, -8 ];
 
 window.onload = function init() {
 
@@ -48,16 +56,24 @@ window.onload = function init() {
 
     cBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
-    vColor = gl.getAttribLocation( program, "vColor");
+    vColor = gl.getAttribLocation( program, "vColor" );
     gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray( vColor );
 
-    gl.uniformMatrix4fv( gl.getUniformLocation(program, "projMatrix"),
+    gl.uniformMatrix4fv( gl.getUniformLocation(program, "projMatrix" ),
                          false,
                          MyMath.flattenMatrix(
                              MyMath.perspectiveViewMat(
                                  NEAR, FAR, N_WIDTH, N_HEIGHT )
                          ) );
+
+    gl.uniform3fv( gl.getUniformLocation(program, "lightPos" ),
+                   LIGHT_POS );
+
+    gl.uniform1f( gl.getUniformLocation(program, "ambientLight" ),
+                   AMBIENT_LIGHT );
+    gl.uniform1f( gl.getUniformLocation(program, "diffuseRange" ),
+                   DIFFUSE_RANGE );
 
     requestAnimationFrame( render );
 };

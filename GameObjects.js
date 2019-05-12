@@ -13,7 +13,6 @@ function getTimeDiff( time1 ) {
 
 function shipUpdate( ship ) {
     var diff = ship.getTimeDiff( ship.timeStart );
-    ship.setXRot( diff / 30 );
     ship.setYRot( diff / 20 );
     ship.updateTransform();
 }
@@ -23,9 +22,6 @@ function ringUpdate( ring ) {
     ring.setZRot( diff / 20 );
     var scale = 1 + ( Math.sin( MyMath.degToRad( ( diff / 1000 )
                                        * ( 360 / ring.period ) ) ) ) / 3;
-    ring.setXScale( scale );
-    ring.setYScale( scale );
-    ring.setZScale( scale );
     ring.updateTransform();
 }
 
@@ -93,6 +89,7 @@ function GameObject( type, x, y, z ) {
             this.normals = Ar.ARWING_NORMALS;
             this.colors = getArwingDefaultColors( Ar.ARWING_COLOR_IDS );
             this.update = shipUpdate;
+            this.xRot = 30;
             break;
         case GameObjectType.RING:
             this.vertices = Rn.RING_VERTICES;
