@@ -7,33 +7,6 @@ const GameObjectType = {
     RING : 1
 }
 
-function getTimeDiff( time1 ) {
-    return Date.now() - time1;
-}
-
-function shipUpdate( ship ) {
-    var diff = ship.getTimeDiff( ship.timeStart );
-    ship.setYRot( diff / 20 );
-    ship.updateTransform();
-}
-
-function ringUpdate( ring ) {
-    var diff = ring.getTimeDiff( ring.timeStart );
-    ring.setZRot( diff / 20 );
-    var scale = 1 + ( Math.sin( MyMath.degToRad( ( diff / 1000 )
-                                       * ( 360 / ring.period ) ) ) ) / 3;
-    ring.updateTransform();
-}
-
-function randomColors( length ) {
-    var colors = [];
-    for ( var i = 0; i < length; i++ ) {
-        colors.push( MyMath.Color( Math.random(), Math.random(),
-                                 Math.random(), 1.0 ) );
-    }
-    return colors;
-}
-
 const ARWING_BLACK = MyMath.Color( 0.1, 0.1, 0.1, 1.0 );
 const ARWING_MAIN_COLOR = MyMath.Color( 0.8, 0.8, 0.8, 1.0 );
 const ARWING_SECONDARY_COLOR = MyMath.Color( 0.24, 0.24, 0.63, 1.0 );
@@ -44,25 +17,82 @@ const ARWING_DEFAULT_COLORS = [
 	ARWING_SECONDARY_COLOR
 ];
 
+const RingColor = {
+    DEFAULT : MyMath.Color( 0.85, 0.65, 0.13, 1.0 ),
+    SUCCESS : MyMath.Color( 0.0, 1.0, 0.0, 1.0 ),
+    FAIL : MyMath.Color( 1.0, 0.0, 0.0, 1.0 )
+}
+
+function getTimeDiff( obj ) {
+    var now = Date.now();
+    var diff = now - obj.timeStart;
+    obj.timeStart = now;
+    return diff;
+}
+
+function shipControl( ship, up, down, left, right ) {
+    ship.up = up;
+    ship.down = down;
+    ship.left = left;
+    ship.right = right;
+}
+
+function shipUpdate( ship ) {
+    var diff = ship.getTimeDiff( ship );
+    var speedConst = 50;
+    if ( ship.up ) {
+        ship.setY( ship.yPos + ( diff / speedConst ) );
+        if ( ship.yPos > 15 ) {
+            ship.setY( 15 );
+        }
+    }
+    if ( ship.down ) {
+        ship.setY( ship.yPos - ( diff / speedConst ) );
+        if ( ship.yPos < -15 ) {
+            ship.setY( -15 );
+        }
+    }
+    if ( ship.left ) {
+        ship.setX( ship.xPos - ( diff / speedConst ) );
+        if ( ship.xPos < -15 ) {
+            ship.setX( -15 );
+        }
+    }
+    if ( ship.right ) {
+        ship.setX( ship.xPos + ( diff / speedConst ) );
+        if ( ship.xPos > 15 ) {
+            ship.setX( 15 );
+        }
+    }
+    ship.updateTransform();
+}
+
+function ringUpdate( ring ) {
+    var diff = ring.getTimeDiff( ring );
+    ring.setZRot( ring.zRot + ( diff / 20 ) );
+    var speedConst = 150;
+    ring.setZ( ring.zPos + ( diff / speedConst ) );
+    ring.updateTransform();
+}
+
 function getArwingDefaultColors( ids ) {
     var colors = [];
     for ( var i = 0; i < ids.length; i++ ) {
         colors.push( ARWING_DEFAULT_COLORS[ ids[ i ] ] );
     }
-    return colors
+    return colors;
 }
 
-const RING_GOLD = MyMath.Color( 0.85, 0.65, 0.13, 1.0 );
-
-function getRingColors( count ) {
+function setRingColor( ring, color ) {
     var colors = [];
-    for ( var i = 0; i < count; i++ ) {
-        colors.push( RING_GOLD );
+    for ( var i = 0; i < ring.vertices.length; i++ ) {
+        colors.push( color );
     }
-    return colors
+    ring.colors = colors;
 }
 
 function GameObject( type, x, y, z ) {
+    this.type = type;
     this.xPos = x;
     this.yPos = y;
     this.zPos = z;
@@ -89,14 +119,32 @@ function GameObject( type, x, y, z ) {
             this.normals = Ar.ARWING_NORMALS;
             this.colors = getArwingDefaultColors( Ar.ARWING_COLOR_IDS );
             this.update = shipUpdate;
-            this.xRot = 30;
+            this.control = shipControl;
+            this.yRot = 180;
+            this.zScale = 0.3;
+            this.up = false;
+            this.down = false;
+            this.left = false;
+            this.right = false;
             break;
         case GameObjectType.RING:
             this.vertices = Rn.RING_VERTICES;
             this.normals = Rn.RING_NORMALS;
-            this.colors = getRingColors( this.vertices.length );
+            setRingColor( this, RingColor.DEFAULT );
             this.update = ringUpdate;
             this.period = 3;
+            this.XYscale = 2;
+            this.radius = 1.5 * this.XYscale;
+            this.zScale = 0.5;
+            this.xScale = this.XYscale;
+            this.yScale = this.XYscale;
+            this.passedShip = false;
+            this.setSuccess = function() {
+                setRingColor( this, RingColor.SUCCESS );
+            }
+            this.setFail = function() {
+                setRingColor( this, RingColor.FAIL );
+            }
             break;
         default:
             throw new Error( "Can't handle that type" );
@@ -104,6 +152,12 @@ function GameObject( type, x, y, z ) {
 
     this.setX = function( newX ) {
         this.xPos = newX;
+    }
+    this.setY = function( newY ) {
+        this.yPos = newY;
+    }
+    this.setZ = function( newZ ) {
+        this.zPos = newZ;
     }
     this.setXScale = function( newXScale ) {
         this.xScale = newXScale;
