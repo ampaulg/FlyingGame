@@ -37,6 +37,7 @@ var rightPressed = false;
 
 var lastNewRingTime;
 const RING_SPAWN_TIME = 1200;
+const RING_START = -30;
 
 window.onload = function init() {
 
@@ -109,7 +110,7 @@ function makeNewRing() {
     var x = ( Math.random() * 20 ) - 10;
     var y = ( Math.random() * 20 ) - 10;
     gameObjects.push( new GameObj.GameObject( GameObj.GameObjectType.RING,
-                                              x, y, -30 ) );
+                                              x, y, RING_START ) );
     lastNewRingTime = Date.now();
 }
 
