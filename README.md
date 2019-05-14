@@ -1,6 +1,6 @@
 # WebGL Flying Game
 
-Not in a playable state yet as a lot of things still need adding, but the current state of the project can be seen [here](https://ampaulg.github.io/FlyingGame/)
+In a basic playable state, can be seen [here](https://ampaulg.github.io/FlyingGame/).
 
 ## Testing
 
