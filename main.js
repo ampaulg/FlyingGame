@@ -18,10 +18,7 @@ const AMBIENT_LIGHT = 0.3;
 const DIFFUSE_RANGE = 0.7;
 
 const SHIP_Z = -6;
-
 var ship = new GameObj.GameObject( GameObj.GameObjectType.SHIP, 0, 0, SHIP_Z );
-
-var time1;
 var gameObjects = [
     ship
 ];
@@ -38,6 +35,11 @@ var rightPressed = false;
 var lastNewRingTime;
 const RING_SPAWN_TIME = 1200;
 const RING_START = -30;
+
+var currentStreak = 0;
+var longestStreak = 0;
+var streakText;
+var highScoreText;
 
 window.onload = function init() {
 
@@ -88,6 +90,8 @@ window.onload = function init() {
 
     document.getElementById( "yCheckbox" ).addEventListener( "change", invertY,
                                                              false );
+    streakText = document.getElementById( "streakC" );
+    highScoreText = document.getElementById( "streakL" );
 
     makeNewRing();
     lastNewRingTime = Date.now();
@@ -131,10 +135,18 @@ function updateGameObjects() {
                     Math.pow( ( gameObjects[ i ].yPos - ship.yPos ), 2 ) ) )
                  < gameObjects[ i ].radius ) {
                      gameObjects[ i ].setSuccess();
+                     currentStreak++;
+                     if ( currentStreak > longestStreak ) {
+                         longestStreak = currentStreak;
+                         highScoreText.innerHTML = longestStreak;
+                     }
+
             } else {
                 gameObjects[ i ].setFail();
+                currentStreak = 0;
             }
             gameObjects[ i ].passedShip = true;
+            streakText.innerHTML = currentStreak;
         }
 
         gameObjects[ i ].update( gameObjects[ i ] );
