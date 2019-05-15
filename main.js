@@ -33,8 +33,11 @@ var leftPressed = false;
 var rightPressed = false;
 
 var lastNewRingTime;
-const RING_SPAWN_TIME = 1200;
-const RING_START = -30;
+const RING_START_Z = -30;
+const INITIAL_RING_SPAWN_TIME = 2500;
+const RING_SPAWN_TIME_MODIFIER = 50;
+const FASTEST_RING_SPAWN_TIME = 1000;
+var currentRingSpawnTime = INITIAL_RING_SPAWN_TIME;
 
 var currentStreak = 0;
 var longestStreak = 0;
@@ -100,7 +103,7 @@ window.onload = function init() {
 
 function gameUpdate() {
 
-    if ( Date.now() - lastNewRingTime > RING_SPAWN_TIME ) {
+    if ( Date.now() - lastNewRingTime > currentRingSpawnTime ) {
         makeNewRing();
     }
 
@@ -114,7 +117,7 @@ function makeNewRing() {
     var x = ( Math.random() * 20 ) - 10;
     var y = ( Math.random() * 20 ) - 10;
     gameObjects.push( new GameObj.GameObject( GameObj.GameObjectType.RING,
-                                              x, y, RING_START ) );
+                                              x, y, RING_START_Z ) );
     lastNewRingTime = Date.now();
 }
 
@@ -140,10 +143,14 @@ function updateGameObjects() {
                          longestStreak = currentStreak;
                          highScoreText.innerHTML = longestStreak;
                      }
+                     if ( currentRingSpawnTime > FASTEST_RING_SPAWN_TIME ) {
+                         currentRingSpawnTime -= RING_SPAWN_TIME_MODIFIER;
+                     }
 
             } else {
                 gameObjects[ i ].setFail();
                 currentStreak = 0;
+                currentRingSpawnTime = INITIAL_RING_SPAWN_TIME;
             }
             gameObjects[ i ].passedShip = true;
             streakText.innerHTML = currentStreak;
