@@ -7,14 +7,23 @@ const GameObjectType = {
     RING : 1
 }
 
-const ARWING_BLACK = MyMath.Color( 0.1, 0.1, 0.1, 1.0 );
+const BLACK = MyMath.Color( 0.1, 0.1, 0.1, 1.0 ); // not using actual black since the background is black
 const ARWING_MAIN_COLOR = MyMath.Color( 0.8, 0.8, 0.8, 1.0 );
 const ARWING_SECONDARY_COLOR = MyMath.Color( 0.24, 0.24, 0.63, 1.0 );
+const WOLFEN_MAIN_COLOR = MyMath.Color( 0.6, 0.6, 0.6, 1.0 );
+const WOLFEN_SECONDARY_COLOR = MyMath.Color( 0.72, 0.06, 0.05, 1.0 );
 
-const ARWING_DEFAULT_COLORS = [
-	ARWING_BLACK,
+
+const ARWING_COLORS = [
+	BLACK,
 	ARWING_MAIN_COLOR,
 	ARWING_SECONDARY_COLOR
+];
+
+const WOLFEN_COLORS = [
+	BLACK,
+	WOLFEN_MAIN_COLOR,
+	WOLFEN_SECONDARY_COLOR
 ];
 
 const RingColor = {
@@ -75,10 +84,18 @@ function ringUpdate( ring ) {
     ring.updateTransform();
 }
 
-function getArwingDefaultColors( ids ) {
+function getArwingColors( ids ) {
     var colors = [];
     for ( var i = 0; i < ids.length; i++ ) {
-        colors.push( ARWING_DEFAULT_COLORS[ ids[ i ] ] );
+        colors.push( ARWING_COLORS[ ids[ i ] ] );
+    }
+    return colors;
+}
+
+function getWolfenColors( ids ) {
+    var colors = [];
+    for ( var i = 0; i < ids.length; i++ ) {
+        colors.push( WOLFEN_COLORS[ ids[ i ] ] );
     }
     return colors;
 }
@@ -117,7 +134,9 @@ function GameObject( type, x, y, z ) {
         case GameObjectType.SHIP:
             this.vertices = Ar.ARWING_VERTICES;
             this.normals = Ar.ARWING_NORMALS;
-            this.colors = getArwingDefaultColors( Ar.ARWING_COLOR_IDS );
+            this.arwingColors = getArwingColors( Ar.ARWING_COLOR_IDS );
+            this.wolfenColors = getWolfenColors( Ar.ARWING_COLOR_IDS );
+            this.colors = this.arwingColors
             this.update = shipUpdate;
             this.control = shipControl;
             this.yRot = 180;
@@ -126,6 +145,15 @@ function GameObject( type, x, y, z ) {
             this.down = false;
             this.left = false;
             this.right = false;
+            this.isArwing = true;
+            this.toggleColors = function() {
+                if ( this.isArwing ) {
+                    this.colors = this.wolfenColors;
+                } else {
+                    this.colors = this.arwingColors;
+                }
+                this.isArwing = !this.isArwing;
+            }
             break;
         case GameObjectType.RING:
             this.vertices = Rn.RING_VERTICES;

@@ -93,6 +93,9 @@ window.onload = function init() {
 
     document.getElementById( "yCheckbox" ).addEventListener( "change", invertY,
                                                              false );
+    document.getElementById( "useWolfen" ).addEventListener( "change",
+                                                             toggleShipColor,
+                                                             false );
     streakText = document.getElementById( "streakC" );
     highScoreText = document.getElementById( "streakL" );
 
@@ -188,6 +191,10 @@ function drawObject( obj ) {
                          false,
                          MyMath.flattenMatrix( obj.getRotMatrix() ) );
     gl.drawArrays( gl.TRIANGLES, 0, obj.vertices.length );
+}
+
+function toggleShipColor() {
+    ship.toggleColors();
 }
 
 var yInverted = false;
