@@ -44,6 +44,10 @@ var longestStreak = 0;
 var streakText;
 var highScoreText;
 
+const FADE_START_POS = -25.0;
+const FADE_RANGE = 5.0;
+const SKY_COLOR = MyMath.Color( 0.53, 0.81, 0.92, 1.0 );
+
 window.onload = function init() {
 
     canvas = document.getElementById( "gl-canvas" );
@@ -52,7 +56,9 @@ window.onload = function init() {
     if ( !gl ) { alert( "WebGL isn't available" ); }
 
     gl.viewport( 0, 0, canvas.width, canvas.height );
-    gl.clearColor( 0, 0, 0, 1 );
+    gl.clearColor( SKY_COLOR.r, SKY_COLOR.g,
+                   SKY_COLOR.b, SKY_COLOR.a );
+
     gl.enable( gl.DEPTH_TEST );
 
     program = initShaders( gl, "vertex-shader", "fragment-shader" );
@@ -87,9 +93,15 @@ window.onload = function init() {
                    LIGHT_POS );
 
     gl.uniform1f( gl.getUniformLocation( program, "ambientLight" ),
-                   AMBIENT_LIGHT );
+                  AMBIENT_LIGHT );
     gl.uniform1f( gl.getUniformLocation( program, "diffuseRange" ),
-                   DIFFUSE_RANGE );
+                  DIFFUSE_RANGE );
+    gl.uniform1f( gl.getUniformLocation( program, "fadeStartPos" ),
+                  FADE_START_POS );
+    gl.uniform1f( gl.getUniformLocation( program, "fadeRange" ),
+                  FADE_RANGE );
+    gl.uniform4f( gl.getUniformLocation( program, "skyColor" ),
+                  SKY_COLOR.r, SKY_COLOR.g, SKY_COLOR.b, SKY_COLOR.a );
 
     document.getElementById( "yCheckbox" ).addEventListener( "change", invertY,
                                                              false );

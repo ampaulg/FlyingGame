@@ -36,11 +36,13 @@ varying vec4 fNormal;
 uniform vec3 lightPos;
 varying vec3 worldPos;
 
+
 uniform float ambientLight;
 uniform float diffuseRange;
 
-const float FADE_START_POS = -25.0;
-const float FADE_RANGE = 5.0;
+uniform float fadeStartPos;
+uniform float fadeRange;
+uniform vec4 skyColor;
 
 void
 main()
@@ -60,9 +62,10 @@ main()
     gl_FragColor.rgb = ambient + diffuse;
 
     // fade distant objects
-    if ( worldPos.z < FADE_START_POS ) {
-        gl_FragColor.rgb *= 1.0 + ( ( worldPos.z - FADE_START_POS )
-                                     / FADE_RANGE );
+    if ( worldPos.z < fadeStartPos ) {
+        float fadeMagnitude = -( ( worldPos.z - fadeStartPos ) / fadeRange );
+        gl_FragColor.rgb *= 1.0 - fadeMagnitude;
+        gl_FragColor.rgb += ( skyColor.rgb * fadeMagnitude );
     }
 
     gl_FragColor.w = 1.0;
